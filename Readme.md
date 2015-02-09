@@ -1,6 +1,5 @@
-Forth inspired language to manipulate sets
+Forth inspired language to operate on sets
 
 __Todo__
-* [ ] Figure out language semantics (e.g. Which set operations to support)
-* [ ] Support unicode set operations (∪, ∩)
-* [ ] Implement interpreter in python and then rpython?
+* Lex and parse rest of built-in operations and sets
+* Implement interpreter in python and then rpython?
