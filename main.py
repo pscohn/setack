@@ -1,5 +1,30 @@
 # -*- coding: utf-8 -*-
 
+'''
+Semantics of setack
+
+built-in sets:
+    * Natural Numbers
+    * Real Numbers
+
+built-in types:
+    empty set (∅)
+    Int
+    Float
+    Set
+    Booleans and associated operations, throw runtime error if sets
+
+operations:
+    membership              (∈):
+    not-member              (∉):
+    subset                  (⊆): A ⊆ B means every element of A is also an element of B
+    union                   (∪): A ∪ B means the set of those elements which are either in A, or in B, or in both.
+    intersection            (∩): A ∩ B means the set that contains all those elements that A and B have in common.
+    difference              (\): In the left set and not in the right set
+    symmetric difference    (∆): In either set but not in both
+    power set               (ℙ): All possible subsets
+'''
+
 import tokenize
 from   token    import tok_name as tokenName
 from   StringIO import StringIO
@@ -42,4 +67,7 @@ if __name__ == '__main__':
     '''))
 
     print result
+
+
+
 
