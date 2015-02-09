@@ -25,49 +25,87 @@ operations:
     power set               (ℙ): All possible subsets
 '''
 
-import tokenize
-from   token    import tok_name as tokenName
-from   StringIO import StringIO
+import re
+
+def tokensFromLine(line):
+
+    pattern = re.compile(u'''
+          (?P<LeftBracket>{)
+        | (?P<RightBracket>})
+        | (?P<Comma>,)
+        | (?P<Bool>True|False)
+        | (?P<Float>\d+\.\d+)
+        | (?P<Int>\d+)
+        | (?P<Word>\w+)
+        | (?P<EmptySet>∅)
+    ''', re.VERBOSE | re.UNICODE)
+
+    for m in pattern.finditer(line):
+        ((key, value),) = [(k, v) for k, v in m.groupdict().items() if v is not None]
+        yield (key, value, m.start(key), m.end(key))
 
 def generateTokens(input):
-    return tokenize.generate_tokens(StringIO(input).readline)
+    """(type, value, start, end, line)"""
+    lines = input.split('\n')
+    for lineno, line in enumerate(lines):
+        for tok in tokensFromLine(line):
+            yield tok + (lineno,)
 
 def parse(tokens):
+
     result = []
-    token = next(tokens, None)
-    while token:
-        number, value, start, end, line = token
-        if value is '}':
+    tok    = next(tokens, None)
+
+    while tok:
+
+        type, value, start, end, lineno = tok
+
+        if type == 'RightBracket': 
+            result.append('}')
             break
-        elif value in (',', '', '\n') or number is 5: # 5: indent
-            token = next(tokens, None)
-            continue
-        elif number is 1:
+        elif type == 'Bool':
+            if value == 'True':
+                result.append(True)
+            elif value == 'False':
+                result.append(False)
+        elif type == 'Word':
             result.append(value)
-        elif number is 2:
-            try:
-                n = int(value)
-            except ValueError:
-                n = float(value)
-            result.append(n)
-        elif value is '{':
-            s = set(parse(tokens))
-            result.append(s)
+        elif type == 'Float':
+            result.append(float(value))
+        elif type == 'Int':
+            result.append(int(value))
+        elif type == 'Comma':
+            result.append(value)
+        elif type == 'LeftBracket':
+            resultSet      = frozenset()
+            commaSepStexes = parse(tokens)
+            if commaSepStexes:
+                stexes   = []
+                currStex = []
+                for item in commaSepStexes:
+                    if item in (',', '}'):
+                        stexes.append(tuple(currStex))
+                        currStex = []
+                    else:
+                        currStex.append(item)
+                resultSet = frozenset(stexes)
+            result.append(resultSet)
+        elif type == 'EmptySet':
+            result.append(frozenset())
         else:
-            raise Exception('Error: Unexpected token: %s' % (token,))
-        token = next(tokens, None)
+            raise Exception('Error: Unexpected token: %s' % (tok,))
+
+        tok = next(tokens, None)
+
     return result
 
 if __name__ == '__main__':
 
-    result = parse(generateTokens('''
+    tokens = generateTokens(u'''
 
-        {1, 2} {3, 4} union
+        {1, 2 3 op, ∅}
 
-    '''))
+    ''')
+    syntaxTree = parse(tokens)
 
-    print result
-
-
-
-
+    print syntaxTree
