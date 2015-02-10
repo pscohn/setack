@@ -6,22 +6,26 @@ import re
 class Token(enum.Enum):
     LeftBracket     = 1
     RightBracket    = 2
-    Comma           = 3
-    BooleanLiteral  = 4
-    FloatLiteral    = 5
-    IntegerLiteral  = 6
-    Symbol          = 7
-    EmptySet        = 8
+    LeftParen       = 3
+    RightParen      = 4
+    Comma           = 5
+    BooleanLiteral  = 6
+    FloatLiteral    = 7
+    IntegerLiteral  = 8
+    EmptySet        = 9
+    Symbol          = 10
 
 __tokenPattern = re.compile(u'''
       (?P<LeftBracket>{)
     | (?P<RightBracket>})
+    | (?P<LeftParen>\()
+    | (?P<RightParen>\))
     | (?P<Comma>,)
     | (?P<BooleanLiteral>True|False)
     | (?P<FloatLiteral>(-?)\d+\.\d+)
     | (?P<IntegerLiteral>(-?)\d+)
     | (?P<EmptySet>∅)
-    | (?P<Symbol>[^\s]+)
+    | (?P<Symbol>[^\s{}(),]+)
 ''', re.VERBOSE | re.UNICODE)
 
 def __searchDict(dict, predicate):
@@ -34,13 +38,41 @@ def tokenize(string):
             (key, value), = __searchDict(match.groupdict(), lambda k, v: v is not None)
             yield (Token[key], value, match.start(key), match.end(key), lineno)
 
+class Stex(tuple): 
+    def __repr__(self):
+        return 'Stex(' + ' '.join(map(str, self)) + ')'
+
+def parseCommaSepSeq(tokens, typeConstructor, delimiter):
+    result = None
+    commaSepTokens = parse(tokens)
+    if commaSepTokens == []:
+        result = typeConstructor()
+    else:
+        args = []
+        curr = []
+        for token in commaSepTokens:
+            if token in (',', delimiter):
+                if len(curr) == 1:
+                    args.append(curr.pop())
+                elif len(curr) > 1:
+                    args.append(Stex(curr))
+                    curr = []
+            else:
+                curr.append(token)
+        result = typeConstructor(args)
+    return result
+
 def parse(tokens):
     result = []
     token  = next(tokens, None)
     while token:
         type, value, start, end, lineno = token
         if type == Token.RightBracket: 
+            #todo if I had peek I wouldn't have to do this
             result.append('}')
+            break
+        if type == Token.RightParen:
+            result.append(')')
             break
         if type == Token.BooleanLiteral:
             if value == 'True':
@@ -58,22 +90,9 @@ def parse(tokens):
         elif type == Token.EmptySet:
             result.append(frozenset())
         elif type == Token.LeftBracket:
-            commaSeparatedTokens = parse(tokens)
-            if commaSeparatedTokens == []:
-                result.append(frozenset())
-            else:
-                stexes   = []
-                currStex = []
-                for t in commaSeparatedTokens:
-                    if t in (',', '}'): # End of stex
-                        if len(currStex) == 1:
-                            stexes.append(currStex.pop())
-                        elif len(currStex) > 1:
-                            stexes.append(tuple(currStex))
-                            currStex = []
-                    else:
-                        currStex.append(t)
-                result.append(frozenset(stexes))
+            result.append(parseCommaSepSeq(tokens, frozenset, '}'))
+        elif type == Token.LeftParen:
+            result.append(parseCommaSepSeq(tokens, tuple, ')'))
         else:
             raise Exception('Error: Unexpected token: %s' % (token,))
         token = next(tokens, None)
