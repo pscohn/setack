@@ -32,7 +32,7 @@ if __name__ == '__main__':
 
     tokens = parser.tokenize(u'''
 
-        {True, False, 01, -2, {-3.5, 4.0}} union
+        {True, False,} {}
 
     ''')
     syntaxTree = parser.parse(tokens)

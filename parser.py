@@ -65,10 +65,10 @@ def parse(tokens):
                 stexes   = []
                 currStex = []
                 for t in commaSeparatedTokens:
-                    if t in (',', '}'):
+                    if t in (',', '}'): # End of stex
                         if len(currStex) == 1:
                             stexes.append(currStex.pop())
-                        else:
+                        elif len(currStex) > 1:
                             stexes.append(tuple(currStex))
                             currStex = []
                     else:
