@@ -27,8 +27,7 @@ operations:
 
 import re
 
-def tokensFromLine(line):
-
+def generateTokensFromLine(line):
     pattern = re.compile(u'''
           (?P<LeftBracket>{)
         | (?P<RightBracket>})
@@ -39,26 +38,25 @@ def tokensFromLine(line):
         | (?P<Word>\w+)
         | (?P<EmptySet>∅)
     ''', re.VERBOSE | re.UNICODE)
-
     for m in pattern.finditer(line):
-        ((key, value),) = [(k, v) for k, v in m.groupdict().items() if v is not None]
+        (key, value), = [(k, v) for k, v in m.groupdict().items() if v is not None]
         yield (key, value, m.start(key), m.end(key))
 
 def generateTokens(input):
-    """(type, value, start, end, line)"""
+    """token: (token type, token value, start column, end column, line number)"""
     lines = input.split('\n')
     for lineno, line in enumerate(lines):
-        for tok in tokensFromLine(line):
-            yield tok + (lineno,)
+        for token in generateTokensFromLine(line):
+            yield token + (lineno,)
 
 def parse(tokens):
 
     result = []
-    tok    = next(tokens, None)
+    token  = next(tokens, None)
 
-    while tok:
+    while token:
 
-        type, value, start, end, lineno = tok
+        type, value, start, end, lineno = token
 
         if type == 'RightBracket': 
             result.append('}')
@@ -68,14 +66,14 @@ def parse(tokens):
                 result.append(True)
             elif value == 'False':
                 result.append(False)
+        elif type == 'Comma':
+            result.append(value)
         elif type == 'Word':
             result.append(value)
         elif type == 'Float':
             result.append(float(value))
         elif type == 'Int':
             result.append(int(value))
-        elif type == 'Comma':
-            result.append(value)
         elif type == 'LeftBracket':
             resultSet      = frozenset()
             commaSepStexes = parse(tokens)
@@ -84,7 +82,10 @@ def parse(tokens):
                 currStex = []
                 for item in commaSepStexes:
                     if item in (',', '}'):
-                        stexes.append(tuple(currStex))
+                        if len(currStex) == 1:
+                            stexes.append(currStex[0])
+                        else:
+                            stexes.append(tuple(currStex))
                         currStex = []
                     else:
                         currStex.append(item)
@@ -95,16 +96,14 @@ def parse(tokens):
         else:
             raise Exception('Error: Unexpected token: %s' % (tok,))
 
-        tok = next(tokens, None)
+        token = next(tokens, None)
 
     return result
 
 if __name__ == '__main__':
 
     tokens = generateTokens(u'''
-
-        {1, 2 3 op, ∅}
-
+        {True, False, 2 3 add eq}
     ''')
     syntaxTree = parse(tokens)
 
