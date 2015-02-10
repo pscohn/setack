@@ -4,8 +4,6 @@ __Todo__
 * Lex and parse rest of built-in operations and sets
 * Implement interpreter in python and then rpython?
 
-__Semantics of Setack__
-
 __Grammar__
 
 ```js
@@ -19,8 +17,8 @@ expression = set
 
 __Built-ins__
 
-| symbol | description |
-| ------ | ----------- |
+| Symbol | Description |
+| :----- | :---------- |
 | ∅ | Empty set |
 | ℕ | Natural numbers |
 | ℝ | Real numbers |
