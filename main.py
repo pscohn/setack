@@ -30,11 +30,12 @@ import parser
 
 if __name__ == '__main__':
 
-    syntaxTree = parser.parse(u'''
+    tokens = parser.tokenize(u'''
 
         {True, False, 01, -2, {-3.5, 4.0}} union
 
     ''')
+    syntaxTree = parser.parse(tokens)
 
     print(syntaxTree)
 
