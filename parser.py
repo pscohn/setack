@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
+import collections
 import enum
 import re
 
-class Token(enum.Enum):
+class TokenType(enum.Enum):
     LeftBracket     = 1
     RightBracket    = 2
     LeftParen       = 3
@@ -14,6 +15,8 @@ class Token(enum.Enum):
     IntegerLiteral  = 8
     EmptySet        = 9
     Symbol          = 10
+
+Token = collections.namedtuple('Token', ['type', 'value', 'start', 'end', 'lineno'])
 
 __tokenPattern = re.compile(u'''
       (?P<LeftBracket>{)
@@ -36,11 +39,11 @@ def tokenize(string):
     for lineno, line in enumerate(lines, start=1):
         for match in __tokenPattern.finditer(line):
             (key, value), = __searchDict(match.groupdict(), lambda k, v: v is not None)
-            yield (Token[key], value, match.start(key), match.end(key), lineno)
+            yield Token(TokenType[key], value, match.start(key), match.end(key), lineno)
 
-class Stex(tuple): 
+class stex(tuple): 
     def __repr__(self):
-        return 'Stex(' + ' '.join(map(str, self)) + ')'
+        return 'stex({})'.format(' '.join(map(str, self)))
 
 def parseCommaSepSeq(tokens, typeConstructor, delimiter):
     result = None
@@ -55,7 +58,7 @@ def parseCommaSepSeq(tokens, typeConstructor, delimiter):
                 if len(curr) == 1:
                     args.append(curr.pop())
                 elif len(curr) > 1:
-                    args.append(Stex(curr))
+                    args.append(stex(curr))
                     curr = []
             else:
                 curr.append(token)
@@ -67,31 +70,30 @@ def parse(tokens):
     token  = next(tokens, None)
     while token:
         type, value, start, end, lineno = token
-        if type == Token.RightBracket: 
-            #todo if I had peek I wouldn't have to do this
+        if token.type == TokenType.RightBracket: 
             result.append('}')
             break
-        if type == Token.RightParen:
+        if token.type == TokenType.RightParen:
             result.append(')')
             break
-        if type == Token.BooleanLiteral:
-            if value == 'True':
+        if token.type == TokenType.BooleanLiteral:
+            if token.value == 'True':
                 result.append(True)
-            elif value == 'False':
+            elif token.value == 'False':
                 result.append(False)
-        elif type == Token.Comma:
-            result.append(value)
-        elif type == Token.Symbol:
-            result.append(value)
-        elif type == Token.FloatLiteral:
-            result.append(float(value))
-        elif type == Token.IntegerLiteral:
-            result.append(int(value))
-        elif type == Token.EmptySet:
+        elif token.type == TokenType.Comma:
+            result.append(token.value)
+        elif token.type == TokenType.Symbol:
+            result.append(token.value)
+        elif token.type == TokenType.FloatLiteral:
+            result.append(float(token.value))
+        elif token.type == TokenType.IntegerLiteral:
+            result.append(int(token.value))
+        elif token.type == TokenType.EmptySet:
             result.append(frozenset())
-        elif type == Token.LeftBracket:
+        elif token.type == TokenType.LeftBracket:
             result.append(parseCommaSepSeq(tokens, frozenset, '}'))
-        elif type == Token.LeftParen:
+        elif token.type == TokenType.LeftParen:
             result.append(parseCommaSepSeq(tokens, tuple, ')'))
         else:
             raise Exception('Error: Unexpected token: %s' % (token,))
