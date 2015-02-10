@@ -33,9 +33,9 @@ def tokenizeLine(line):
 
 def tokenize(string):
     lines = string.split('\n')
-    for lineno, line in enumerate(lines):
+    for lineno, line in enumerate(lines, start=1):
         for token in tokenizeLine(line):
-            yield token + (lineno + 1,)
+            yield token + (lineno,)
 
 def parseTokens(tokens):
 
