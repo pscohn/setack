@@ -20,8 +20,8 @@ __tokenPattern = re.compile(u'''
     | (?P<BooleanLiteral>True|False)
     | (?P<FloatLiteral>(-?)\d+\.\d+)
     | (?P<IntegerLiteral>(-?)\d+)
-    | (?P<Symbol>\w+)
     | (?P<EmptySet>∅)
+    | (?P<Symbol>[^\s]+)
 ''', re.VERBOSE | re.UNICODE)
 
 def __searchDict(dict, predicate):
