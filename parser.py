@@ -3,7 +3,6 @@
 import collections
 import enum
 import re
-import queue
 
 class TokenType(enum.Enum):
     End            = 0
@@ -63,14 +62,24 @@ class Parser():
         return result
 
     def parse(self, string):
-        self.stack = [] # cleanup environment
+        self.stack = []
         return self.__parse(self.tokenize(string))
 
     def __parse(self, tokens):
+
         result = []
         curr   = []
+
         while len(tokens):
+
             token = tokens.pop(0)
+
+            e = SyntaxError('Unexpected {}'.format(token.type))
+            e.filename = self.source
+            e.lineno   = token.lineno
+            e.offset   = token.start + 1
+            e.text     = token.line
+
             if token.type == TokenType.BooleanLiteral:
                 if token.value == 'True':
                     curr.append(True)
@@ -94,45 +103,35 @@ class Parser():
                                 TokenType.End):
 
                 if len(curr) == 1:
-                    result.append(curr[0])
+                    result.append(curr.pop())
                 elif len(curr) > 1:
                     result.append(SetExp(curr))
-                curr = []
+                    curr = []
 
-                if token.type == TokenType.End:
-                    if len(self.stack):
-                        t = self.stack.pop()
-                        if t.type == TokenType.LeftBracket:
-                            e = SyntaxError('Missing closing bracket')
-                            e.filename = self.source
-                            e.lineno = token.lineno
-                            e.offset = token.start + 1
-                            e.text   = token.line
-                            raise e
-                        else:
-                            raise SyntaxError('Closing paren missing')
+                if token.type == TokenType.End and len(self.stack):
+                    raise e # { or (
 
                 if token.type == TokenType.RightBracket:
                     if len(self.stack) == 0:
-                        raise SyntaxError('Unexpected closing bracket')
+                        raise e # ()}
                     else:
                         t = self.stack.pop()
                         if t.type == TokenType.LeftBracket:
                             break
                         else:
-                            raise SyntaxError('Unbalanced parens')
+                            raise e # ( }
 
                 if token.type == TokenType.RightParen:
                     if len(self.stack) == 0:
-                        raise SyntaxError('Unexpected closing paren')
+                        raise e # {})
                     else:
                         t = self.stack.pop()
                         if t.type == TokenType.LeftParen:
                             break
                         else:
-                            raise SyntaxError('Unbalanced brackets')
+                            raise e # { )
             else:
-                raise SyntaxError('Unexpected token: %s' % (token,))
+                raise e
 
         return result
 
