@@ -96,30 +96,30 @@ def parse(tokens):
                 if len(s):
                     t = s.pop()
                     if t.type == TokenType.LeftBracket:
-                        raise Exception('Error: Closing bracket missing')
+                        raise SyntaxError('Closing bracket missing')
                     else:
-                        raise Exception('Error: Closing paren missing')
+                        raise SyntaxError('Closing paren missing')
 
             if token.type == TokenType.RightBracket:
                 if len(s) == 0:
-                    raise Exception('Error: Unexpected closing bracket')
+                    raise SyntaxError('Unexpected closing bracket')
                 else:
                     t = s.pop()
                     if t.type == TokenType.LeftBracket:
                         break
                     else:
-                        raise Exception('Error: Unbalanced parens')
+                        raise SyntaxError('Unbalanced parens')
 
             if token.type == TokenType.RightParen:
                 if len(s) == 0:
-                    raise Exception('Error: Unexpected closing paren')
+                    raise SyntaxError('Unexpected closing paren')
                 else:
                     t = s.pop()
                     if t.type == TokenType.LeftParen:
                         break
                     else:
-                        raise Exception('Error: Unbalanced brackets')
+                        raise SyntaxError('Unbalanced brackets')
         else:
-            raise Exception('Error: Unexpected token: %s' % (token,))
+            raise SyntaxError('Unexpected token: %s' % (token,))
     return result
 
