@@ -3,96 +3,123 @@
 import collections
 import enum
 import re
+import queue
 
 class TokenType(enum.Enum):
-    LeftBracket     = 1
-    RightBracket    = 2
-    LeftParen       = 3
-    RightParen      = 4
-    Comma           = 5
-    BooleanLiteral  = 6
-    FloatLiteral    = 7
-    IntegerLiteral  = 8
-    EmptySet        = 9
-    Symbol          = 10
+    End             = 0
+    NewLine         = 1
+    LeftBracket     = 2
+    RightBracket    = 3
+    LeftParen       = 4
+    RightParen      = 5
+    Comma           = 6
+    BooleanLiteral  = 7
+    FloatLiteral    = 8
+    IntegerLiteral  = 9
+    EmptySet        = 10
+    Symbol          = 11
+
+TokenPattern = re.compile(u'''
+      (?P<End>\Z)
+    | (?P<NewLine>\\n)
+    | (?P<LeftBracket>{)
+    | (?P<RightBracket>})
+    | (?P<LeftParen>\()
+    | (?P<RightParen>\))
+    | (?P<Comma>,)
+    | (?P<BooleanLiteral>True|False)
+    | (?P<FloatLiteral>(-?)\d+\.\d+)
+    | (?P<IntegerLiteral>(-?)\d+)
+    | (?P<EmptySet>∅)
+    | (?P<Symbol>[^\s{}(),]+)
+''', re.VERBOSE | re.UNICODE)
 
 Token = collections.namedtuple('Token', 'type value start end lineno')
 
 def tokenize(string):
-    tokenPattern = re.compile(u'''
-          (?P<LeftBracket>{)
-        | (?P<RightBracket>})
-        | (?P<LeftParen>\()
-        | (?P<RightParen>\))
-        | (?P<Comma>,)
-        | (?P<BooleanLiteral>True|False)
-        | (?P<FloatLiteral>(-?)\d+\.\d+)
-        | (?P<IntegerLiteral>(-?)\d+)
-        | (?P<EmptySet>∅)
-        | (?P<Symbol>[^\s{}(),]+)
-    ''', re.VERBOSE | re.UNICODE)
-    lines = string.split('\n')
-    for lineno, line in enumerate(lines, start=1):
-        for match in tokenPattern.finditer(line):
-            (key, value), = [(k, v) for k, v in match.groupdict().items() if v is not None]
-            yield Token(TokenType[key], value, match.start(key), match.end(key), lineno)
+    result = []
+    lineno = 1
+    for m in TokenPattern.finditer(string):
+        items   = m.groupdict().items()
+        (k, v), = [(k, v) for k, v in items if v is not None]
+        token   = Token(TokenType[k], v, m.start(k), m.end(k), lineno)
+        if token.type == TokenType.NewLine:
+            lineno += 1
+        else:
+            result.append(token)
+    return result
 
-class stex(tuple): 
+class SetExp(): 
+    def __init__(self, seq):
+        self.__terms = tuple(seq)
     def __repr__(self):
-        return 'stex({})'.format(' '.join(map(str, self)))
+        return 'SetExp({})'.format(' '.join(map(str, self.__terms)))
+
+s = [] # Todo: Remove from global scope...hacky!
 
 def parse(tokens):
     result = []
-    token  = next(tokens, None)
-    while token:
-        type, value, start, end, lineno = token
-        if token.type == TokenType.RightBracket: 
-            result.append('}')
-            break
-        if token.type == TokenType.RightParen:
-            result.append(')')
-            break
+    curr   = []
+    while len(tokens):
+        token = tokens.pop(0)
         if token.type == TokenType.BooleanLiteral:
             if token.value == 'True':
-                result.append(True)
-            elif token.value == 'False':
-                result.append(False)
-        elif token.type == TokenType.Comma:
-            result.append(token.value)
+                curr.append(True)
+            elif token.value == 'False': 
+                curr.append(False)
         elif token.type == TokenType.Symbol:
-            result.append(token.value)
+            curr.append(token.value)
         elif token.type == TokenType.FloatLiteral:
-            result.append(float(token.value))
+            curr.append(float(token.value))
         elif token.type == TokenType.IntegerLiteral:
-            result.append(int(token.value))
+            curr.append(int(token.value))
         elif token.type == TokenType.EmptySet:
-            result.append(frozenset())
+            curr.append(frozenset())
         elif token.type == TokenType.LeftBracket:
-            result.append(parseCommaSepSeq(tokens, frozenset, '}'))
+            s.append(token)
+            curr.append(frozenset(parse(tokens)))
         elif token.type == TokenType.LeftParen:
-            result.append(parseCommaSepSeq(tokens, tuple, ')'))
+            s.append(token)
+            curr.append(tuple(parse(tokens)))
+        elif token.type in (TokenType.Comma, 
+                            TokenType.RightBracket,
+                            TokenType.RightParen,
+                            TokenType.End):
+
+            if len(curr) == 1:
+                result.append(curr[0])
+            elif len(curr) > 1:
+                result.append(SetExp(curr))
+            curr = []
+
+            if token.type == TokenType.End:
+                if len(s):
+                    t = s.pop()
+                    if t.type == TokenType.LeftBracket:
+                        raise Exception('Error: Closing bracket missing')
+                    else:
+                        raise Exception('Error: Closing paren missing')
+
+            if token.type == TokenType.RightBracket:
+                if len(s) == 0:
+                    raise Exception('Error: Unexpected closing bracket')
+                else:
+                    t = s.pop()
+                    if t.type == TokenType.LeftBracket:
+                        break
+                    else:
+                        raise Exception('Error: Unbalanced parens')
+
+            if token.type == TokenType.RightParen:
+                if len(s) == 0:
+                    raise Exception('Error: Unexpected closing paren')
+                else:
+                    t = s.pop()
+                    if t.type == TokenType.LeftParen:
+                        break
+                    else:
+                        raise Exception('Error: Unbalanced brackets')
         else:
             raise Exception('Error: Unexpected token: %s' % (token,))
-        token = next(tokens, None)
-    return result
-
-def parseCommaSepSeq(tokens, typeConstructor, delimiter):
-    result = None
-    commaSepTokens = parse(tokens)
-    if commaSepTokens == []:
-        result = typeConstructor()
-    else:
-        args = []
-        curr = []
-        for token in commaSepTokens:
-            if token in (',', delimiter):
-                if len(curr) == 1:
-                    args.append(curr.pop())
-                elif len(curr) > 1:
-                    args.append(stex(curr))
-                    curr = []
-            else:
-                curr.append(token)
-        result = typeConstructor(args)
     return result
 

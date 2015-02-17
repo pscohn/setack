@@ -3,11 +3,10 @@
 
 import parser
 
-if __name__ == '__main__':
+tokens = parser.tokenize(u'''
+    {1 2, (1, 2)}
+''')
+syntaxTree = parser.parse(tokens)
 
-    syntaxTree = parser.parse(parser.tokenize(u'''
-        (1 2 add, (1, 2, add))
-    '''))
-
-    print(syntaxTree)
+print(syntaxTree)
 
