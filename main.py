@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import parser
+from parser import Parser
 
-tokens = parser.tokenize(u'''
-    {1 2, (1, 2)}
+parser     = Parser('<string>')
+syntaxTree = parser.parse(u'''
+    {1
 ''')
-syntaxTree = parser.parse(tokens)
 
 print(syntaxTree)
 
