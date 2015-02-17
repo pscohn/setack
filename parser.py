@@ -30,7 +30,6 @@ TokenPattern = re.compile(u'''
     | (?P<BooleanLiteral>True|False)
     | (?P<FloatLiteral>(-?)\d+\.\d+)
     | (?P<IntegerLiteral>(-?)\d+)
-    | (?P<EmptySet>∅)
     | (?P<Symbol>[^\s{}(),]+)
 ''', re.VERBOSE | re.UNICODE)
 
@@ -73,8 +72,6 @@ def parse(tokens):
             curr.append(float(token.value))
         elif token.type == TokenType.IntegerLiteral:
             curr.append(int(token.value))
-        elif token.type == TokenType.EmptySet:
-            curr.append(frozenset())
         elif token.type == TokenType.LeftBracket:
             s.append(token)
             curr.append(frozenset(parse(tokens)))
