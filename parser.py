@@ -24,7 +24,7 @@ class SetExp():
     def __init__(self, seq):
         self.__terms = tuple(seq)
     def __repr__(self):
-        return 'SetExp({})'.format(' '.join(map(str, self.__terms)))
+        return 'SetExp({})'.format(', '.join(map(str, self.__terms)))
 
 class Parser():
 
