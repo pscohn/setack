@@ -23,6 +23,9 @@ Token = collections.namedtuple(
 class SetExp(): 
     def __init__(self, seq):
         self.__terms = tuple(seq)
+    def __iter__(self):
+        for item in self.__terms:
+            yield item
     def __repr__(self):
         return 'SetExp({})'.format(', '.join(map(str, self.__terms)))
 
