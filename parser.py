@@ -136,5 +136,5 @@ class Parser():
             else:
                 raise e
 
-        return result
+        return SetExp(result)
 
