@@ -85,8 +85,8 @@ if __name__ == '__main__':
                '+'      : add, 
                'x'      : 1}
 
+    print('input:', input)
     eval(syntaxTree, stack, symbols)
 
-    print()
-    for step, inst in enumerate(trace, start=1):
-        print('{}: {}'.format(step, inst))
+    #for step, inst in enumerate(trace, start=1):
+    #    print('{}: {}'.format(step, inst))
