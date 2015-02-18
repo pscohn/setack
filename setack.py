@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import vm
+import code
 
 if __name__ == '__main__':
 
@@ -9,7 +10,7 @@ if __name__ == '__main__':
 
     try:
         while True:
-            s = input('setack> ')
+            s = input('>>> ')
             vm.eval(s)
     except (KeyboardInterrupt, EOFError):
         exit(0)
