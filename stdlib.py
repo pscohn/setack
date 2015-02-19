@@ -3,6 +3,8 @@
 import parser
 import types
 
+from colorprint import *
+
 # Stack
 # ------------------------------------------------------------------------------
 
@@ -16,11 +18,12 @@ def showStack(stack, _):
 
     s       = str(max(stack, key=lambda a: len(str(a))))
     width   = len(s)
-    divider = '-' * (width + 4)
+    divider = '  ' + ('-' * (width + 4))
+    side    = '|'
 
     print(divider)
     for item in reversed(stack):
-        print('| {0:^{1}} |'.format(str(item), width))
+        print('  {2} {0:^{1}} {2}'.format(str(item), width, side))
         print(divider)
 
 def showSymbols(_, symbols):
@@ -30,9 +33,9 @@ def showSymbols(_, symbols):
     for symbol, value in symbols.items():
         valueType = type(value)
         if valueType == types.FunctionType:
-            print('{0:<{2}} : {1}'.format(symbol, 'function', width))
+            print('  {0:<{2}} : {1}'.format(symbol, 'function', width))
         else:
-            print('{0:<{2}} : {1}'.format(symbol, value, width))
+            print('  {0:<{2}} : {1}'.format(symbol, value, width))
 
 def clear(stack, _):
     while stack: stack.pop()
