@@ -12,7 +12,7 @@ Forth inspired language to operate on sets
 ```
 
 __Todo__
-* Implement rest of built=ins
+* Implement rest of built-ins
 * Repl function to show built-ins
 
 __Built-ins__
