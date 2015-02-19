@@ -1,18 +1,18 @@
+```
+   (                                )
+   )\ )     *   )   (       (    ( /(
+  (()/((  ` )  /(   )\      )\   )\())
+   /(_))\  ( )(_)|(((_)(  (((_)|((_)\
+  (_))((_)(_(_()) )\ _ )\ )\___|_ ((_)
+  / __| __|_   _| (_)_\(_|(/ __| |/ /
+  \__ \ _|  | |    / _ \  | (__  ' <
+  |___/___| |_|   /_/ \_\  \___|_|\_\
+```
+
 Forth inspired language to operate on sets
 
 __Todo__
-* Implement interpreter in python and then rpython?
-
-__Grammar__
-
-```js
-statement  = expresssion { whitespace statement }
-expression = set
-           | pair
-           | boolean
-           | number
-           | symbol
-```
+* Implement rest of builtins
 
 __Built-ins__
 
