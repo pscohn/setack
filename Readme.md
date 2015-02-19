@@ -7,12 +7,13 @@
   / __| __|_   _| (_)_\(_|(/ __| |/ /
   \__ \ _|  | |    / _ \  | (__  ' <
   |___/___| |_|   /_/ \_\  \___|_|\_\
-```
 
 Forth inspired language to operate on sets
+```
 
 __Todo__
-* Implement rest of builtins
+* Implement rest of built=ins
+* Repl function to show built-ins
 
 __Built-ins__
 
