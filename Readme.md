@@ -11,5 +11,5 @@
 stack-oriented language to operate on sets
 ```
 
-* Implement auto-complete
+* Finish built-in function documentation
 
