@@ -9,14 +9,22 @@ class VM():
         self.stack   = []
         self.trace   = []
         self.parser  = parser.Parser()
-        self.symbols = { '.'        : stdlib.showTop, 
-                         '!'        : stdlib.assignSymbol,
-                         'showstack': stdlib.showStack, 
-                         'showsymbols': stdlib.showSymbols, 
-                         'clear'    : stdlib.clear,
-                         'depth'    : stdlib.depth,
-                         'drop'     : stdlib.drop,
-                         'union'    : stdlib.union }
+        self.symbols = { '.'                    : stdlib.showTop, 
+                         '!'                    : stdlib.assignSymbol,
+                         'show-stack'           : stdlib.showStack, 
+                         'show-symbols'         : stdlib.showSymbols, 
+                         'clear'                : stdlib.clear,
+                         'depth'                : stdlib.depth,
+                         'drop'                 : stdlib.drop,
+                         'union'                : stdlib.union,
+                         'intersection'         : stdlib.intersection,
+                         'difference'           : stdlib.difference,
+                         'symmetric-difference' : stdlib.symmetricDifference,
+                         'cartesian-product'    : stdlib.cartesianProduct,
+                         'power-set'            : stdlib.powerSet,
+                         'in'                   : stdlib.inSet,
+                         'not-in'               : stdlib.notInSet,
+                         'subset'               : stdlib.subset }
 
     def printTrace(self):
         for step, inst in enumerate(self.trace, start=1):

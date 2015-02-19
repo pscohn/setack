@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import itertools
 import parser
 import types
 
@@ -55,11 +56,6 @@ def assignSymbol(stack, symbols):
 # ------------------------------------------------------------------------------
 
 '''
-| ∪ | union |
-| ∩ | intersection |
-| \ | difference |
-| ∆ | symmetric difference |
-| x | cartesian product |
 | ℙ | power set |
 '''
 
@@ -71,6 +67,89 @@ def union(stack, _):
     elif type(b) != parser.Set:
         raise TypeError("{} is not a set".format(b))
     result = parser.Set(a | b)
+    stack.append(result)
+    return result
+
+def intersection(stack, _):
+    a = stack.pop()
+    b = stack.pop()
+    if type(a) != parser.Set:
+        raise TypeError("{} is not a set".format(a))
+    elif type(b) != parser.Set:
+        raise TypeError("{} is not a set".format(b))
+    result = parser.Set(a & b)
+    stack.append(result)
+    return result
+
+def difference(stack, _):
+    a = stack.pop()
+    b = stack.pop()
+    if type(a) != parser.Set:
+        raise TypeError("{} is not a set".format(a))
+    elif type(b) != parser.Set:
+        raise TypeError("{} is not a set".format(b))
+    result = parser.Set(a - b)
+    stack.append(result)
+    return result
+
+def symmetricDifference(stack, _):
+    a = stack.pop()
+    b = stack.pop()
+    if type(a) != parser.Set:
+        raise TypeError("{} is not a set".format(a))
+    elif type(b) != parser.Set:
+        raise TypeError("{} is not a set".format(b))
+    result = parser.Set(a ^ b)
+    stack.append(result)
+    return result
+
+def cartesianProduct(stack, _):
+    a = stack.pop()
+    b = stack.pop()
+    if type(a) != parser.Set:
+        raise TypeError("{} is not a set".format(a))
+    elif type(b) != parser.Set:
+        raise TypeError("{} is not a set".format(b))
+    result = parser.Set([i for i in itertools.product(a, b)])
+    stack.append(result)
+    return result
+
+def powerSet(stack, _):
+    a = stack.pop()
+    if type(a) != parser.Set:
+        raise TypeError("{} is not a set".format(a))
+    s = list(a)
+    result = parser.Set([i for i in itertools.chain.from_iterable(
+        itertools.combinations(s, r) for r in range(len(s) + 1))])
+    stack.append(result)
+    return result
+
+def inSet(stack, _):
+    a = stack.pop()
+    b = stack.pop()
+    if type(b) != parser.Set:
+        raise TypeError("{} is not a set".format(b))
+    result = a in b
+    stack.append(result)
+    return result
+
+def notInSet(stack, _):
+    a = stack.pop()
+    b = stack.pop()
+    if type(b) != parser.Set:
+        raise TypeError("{} is not a set".format(b))
+    result = a not in b
+    stack.append(result)
+    return result
+
+def subset(stack, _):
+    a = stack.pop()
+    b = stack.pop()
+    if type(a) != parser.Set:
+        raise TypeError("{} is not a set".format(a))
+    if type(b) != parser.Set:
+        raise TypeError("{} is not a set".format(b))
+    result = a <= b
     stack.append(result)
     return result
 
