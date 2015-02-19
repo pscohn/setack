@@ -12,8 +12,9 @@ Forth inspired language to operate on sets
 ```
 
 __Todo__
-* Implement rest of built-ins
-* Repl function to show built-ins
+* Implement rest of set related built-ins
+* Create Symbol and Set class to control printing
+* Autocomplete
 
 __Built-ins__
 

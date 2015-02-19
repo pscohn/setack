@@ -1,12 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import os
 import readline
 import vm
 
 from colorprint import *
 
+history = '{}/{}'.format(os.path.expanduser('~'), '.setack_history')
 vm = vm.VM()
+
+if not os.path.exists(history):
+    open(history, 'w')
+
+readline.read_history_file(history)
 
 try:
 
@@ -35,4 +42,6 @@ try:
 
 except (KeyboardInterrupt, EOFError):
     exit(0)
+finally:
+    readline.write_history_file(history)
 

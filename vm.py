@@ -10,12 +10,13 @@ class VM():
         self.trace   = []
         self.parser  = parser.Parser()
         self.symbols = { '.'        : stdlib.showTop, 
+                         '!'        : stdlib.assignSymbol,
                          'showstack': stdlib.showStack, 
+                         'showsymbols': stdlib.showSymbols, 
                          'clear'    : stdlib.clear,
                          'depth'    : stdlib.depth,
                          'drop'     : stdlib.drop,
-                         'union'    : stdlib.union, 
-                         '+'        : stdlib.add }
+                         'union'    : stdlib.union }
 
     def printTrace(self):
         for step, inst in enumerate(self.trace, start=1):
@@ -41,15 +42,19 @@ class VM():
             return value
 
         elif valueType == str:
+
             if value not in symbols: 
-                raise Exception('Undefined symbol: {}'.format(value))
-            symbolValue = symbols[value]
-            symbolType  = type(symbolValue)
-            if symbolType is types.FunctionType:
-                return symbolValue(stack)
+                stack.append(value)
+                return value
             else:
-                stack.append(symbolValue)
-                return symbolValue
+                symbolValue = symbols[value]
+                symbolType  = type(symbolValue)
+
+                if symbolType is types.FunctionType:
+                    return symbolValue(stack, symbols)
+                else:
+                    stack.append(symbolValue)
+                    return symbolValue
 
         elif valueType == parser.SetExp:
             returnValues = []
