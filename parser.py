@@ -80,7 +80,7 @@ class Parser():
             e = SyntaxError('Unexpected {}'.format(token.type))
             e.filename = self.source
             e.lineno   = token.lineno
-            e.offset   = token.start + 1
+            e.offset   = token.start
             e.text     = token.line
 
             if token.type == TokenType.BooleanLiteral:
