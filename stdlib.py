@@ -39,7 +39,7 @@ def showSymbols(_, symbols):
         if valueType == types.FunctionType:
             name = 'function'
             doc  = value.__doc__
-            if doc: name += ' ({})'.format(value.__doc__)
+            if doc: name += ' : {}'.format(value.__doc__)
 
             print('  {0:<{2}} : {1}'.format(symbol, name, width))
         else:
@@ -54,7 +54,7 @@ def depth(stack, _):
     print(len(stack))
 
 def drop(stack, _):
-    """remove top of stack"""
+    """drop top of stack"""
     if stack: stack.pop()
 
 def assignSymbol(stack, symbols):
@@ -69,6 +69,8 @@ def assignSymbol(stack, symbols):
 # ------------------------------------------------------------------------------
 
 def union(stack, _):
+    """{1,2,3} and {2,3,4} is {1,2,3,4}"""
+    if stack == []: return
     a = stack.pop()
     b = stack.pop()
     if type(a) != parser.Set:
@@ -80,6 +82,8 @@ def union(stack, _):
     return result
 
 def intersection(stack, _):
+    """{1,2,3} and {2,3,4} is {2,3}"""
+    if stack == []: return
     a = stack.pop()
     b = stack.pop()
     if type(a) != parser.Set:
@@ -91,6 +95,8 @@ def intersection(stack, _):
     return result
 
 def difference(stack, _):
+    """{1,2,3} and {2,3,4} is {1}"""
+    if stack == []: return
     a = stack.pop()
     b = stack.pop()
     if type(a) != parser.Set:
@@ -102,6 +108,8 @@ def difference(stack, _):
     return result
 
 def symmetricDifference(stack, _):
+    """{1,2,3} and {2,3,4} is {1,4}"""
+    if stack == []: return
     a = stack.pop()
     b = stack.pop()
     if type(a) != parser.Set:
@@ -113,6 +121,8 @@ def symmetricDifference(stack, _):
     return result
 
 def cartesianProduct(stack, _):
+    """{1,2} and {a,b} is {(1,a),(1,b),(2,a),(2,b)}"""
+    if stack == []: return
     a = stack.pop()
     b = stack.pop()
     if type(a) != parser.Set:
@@ -124,16 +134,20 @@ def cartesianProduct(stack, _):
     return result
 
 def powerSet(stack, _):
+    """{1,2} is {{},{1},{2},{1,2}}"""
+    if stack == []: return
     a = stack.pop()
     if type(a) != parser.Set:
         raise TypeError("{} is not a set".format(a))
     s = list(a)
-    result = parser.Set([i for i in itertools.chain.from_iterable(
+    result = parser.Set([parser.Set(i) for i in itertools.chain.from_iterable(
         itertools.combinations(s, r) for r in range(len(s) + 1))])
     stack.append(result)
     return result
 
 def inSet(stack, _):
+    """1 in {1,2} is True"""
+    if stack == []: return
     a = stack.pop()
     b = stack.pop()
     if type(b) != parser.Set:
@@ -143,6 +157,8 @@ def inSet(stack, _):
     return result
 
 def notInSet(stack, _):
+    """0 in {1,2} is True"""
+    if stack == []: return
     a = stack.pop()
     b = stack.pop()
     if type(b) != parser.Set:
@@ -152,6 +168,8 @@ def notInSet(stack, _):
     return result
 
 def subset(stack, _):
+    """{1,2} and {1,2,3} is True"""
+    if stack == []: return
     a = stack.pop()
     b = stack.pop()
     if type(a) != parser.Set:

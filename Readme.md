@@ -11,5 +11,3 @@
 stack-oriented language to operate on sets
 ```
 
-* Finish built-in function documentation
-
