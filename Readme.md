@@ -11,23 +11,5 @@
 stack-oriented language to operate on sets
 ```
 
-__Todo__
-* Implement rest of set related built-ins
-
-__Built-ins__
-
-| Symbol | Description |
-| :----- | :---------- |
-| ∅ | Empty set |
-| ℕ | Natural numbers |
-| ℝ | Real numbers |
-| ∈ | membership |
-| ∉ | membership |
-| ⊆ | subset |
-| ∪ | union |
-| ∩ | intersection |
-| \ | difference |
-| ∆ | symmetric difference |
-| x | cartesian product |
-| ℙ | power set |
+* Implement auto-complete
 
