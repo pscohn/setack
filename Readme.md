@@ -11,3 +11,5 @@
 stack-oriented language to operate on sets
 ```
 
+* Flip order of evaluation. lhs rhs op, a {a,b} in
+
