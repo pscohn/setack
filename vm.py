@@ -33,7 +33,7 @@ class VM():
             stack.append(value)
             return value
 
-        elif valueType in (frozenset, tuple):
+        elif valueType in (parser.Set, tuple):
             tempStack = []
             for v in value:
                 self.execute(v, tempStack, symbols)
@@ -41,7 +41,7 @@ class VM():
             stack.append(value)
             return value
 
-        elif valueType == str:
+        elif valueType == parser.Symbol:
 
             if value not in symbols: 
                 stack.append(value)

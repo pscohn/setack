@@ -29,6 +29,16 @@ class SetExp():
     def __repr__(self):
         return 'SetExp({})'.format(', '.join(map(str, self.__terms)))
 
+class Set(frozenset):
+    def __repr__(self):
+        return '{{{}}}'.format(', '.join(map(str, self)))
+
+class Symbol(str):
+    def __init__(self, value):
+        self = value
+    def __repr__(self):
+        return '{}'.format(self)
+
 class Parser():
 
     tokenPattern = re.compile(u'''
@@ -89,14 +99,14 @@ class Parser():
                 elif token.value == 'False': 
                     curr.append(False)
             elif token.type == TokenType.Symbol:
-                curr.append(token.value)
+                curr.append(Symbol(token.value))
             elif token.type == TokenType.FloatLiteral:
                 curr.append(float(token.value))
             elif token.type == TokenType.IntegerLiteral:
                 curr.append(int(token.value))
             elif token.type == TokenType.LeftBracket:
                 self.stack.append(token)
-                curr.append(frozenset(self.__parse(tokens)))
+                curr.append(Set(self.__parse(tokens)))
             elif token.type == TokenType.LeftParen:
                 self.stack.append(token)
                 curr.append(tuple(self.__parse(tokens)))
