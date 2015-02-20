@@ -62,8 +62,8 @@ def drop(stack, _):
 def assignSymbol(stack, symbols):
     """assign value to symbol"""
     rhs, lhs = stack.pop(), stack.pop()
-    assertType(rhs, parser.Symbol)
-    symbols[rhs] = lhs
+    assertType(lhs, parser.Symbol)
+    symbols[lhs] = rhs
 
 # Set Operations
 # ------------------------------------------------------------------------------

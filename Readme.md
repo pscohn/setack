@@ -11,4 +11,6 @@
 stack-oriented language to operate on sets
 ```
 
+* Implement procedures
 * Update readme to include key features and a more detailed description of the language. Interpreted dynamically-typed stack-oriented language, etc.
+
