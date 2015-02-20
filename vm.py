@@ -24,7 +24,8 @@ class VM():
                          'power-set'            : stdlib.powerSet,
                          'in'                   : stdlib.inSet,
                          'not-in'               : stdlib.notInSet,
-                         'subset'               : stdlib.subset }
+                         'subset'               : stdlib.subset,
+                         'proper-subset'        : stdlib.properSubset }
 
     def printTrace(self):
         for step, inst in enumerate(self.trace, start=1):

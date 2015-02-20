@@ -61,6 +61,7 @@ keywords = '''
     depth in show-stack clear symmetric-difference not-in subset ! union
     . power-set difference cartesian-product drop intersection show-symbols
 '''.split()
+keywords  = [a + ' ' for a in keywords]
 completer = MyCompleter(keywords)
 
 readline.set_completer_delims(' \t\n;')
