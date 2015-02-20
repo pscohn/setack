@@ -11,6 +11,7 @@
 stack-oriented language to operate on sets
 ```
 
-* Implement procedures
+* Implement procedures: map from variable to setexp, need a setexp literal
+  f name (x, y) -> #({x} {y} union)
 * Update readme to include key features and a more detailed description of the language. Interpreted dynamically-typed stack-oriented language, etc.
 
