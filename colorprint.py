@@ -9,23 +9,21 @@ class Color(enum.Enum):
     Magenta = 5
     Cyan    = 6
     White   = 7
+    Reset   = 8
 
-esc    = '\033['
-reset  = esc + '0m'
-colors = { Color.Black  : esc + '30m'
-         , Color.Red    : esc + '31m'
-         , Color.Green  : esc + '32m'
-         , Color.Yellow : esc + '33m'
-         , Color.Blue   : esc + '34m'
-         , Color.Magenta: esc + '35m'
-         , Color.Cyan   : esc + '36m'
-         , Color.White  : esc + '37m' }
-
-def cprint (obj, color):
-    code = colors.get(color)
-    print(code + str(obj) + reset if code else text)
+colorCode = { Color.Black  : '\033[30m',
+              Color.Red    : '\033[31m',
+              Color.Green  : '\033[32m',
+              Color.Yellow : '\033[33m',
+              Color.Blue   : '\033[34m',
+              Color.Magenta: '\033[35m',
+              Color.Cyan   : '\033[36m',
+              Color.White  : '\033[37m',
+              Color.Reset  : '\033[0m' }
 
 def cformat(obj, color):
-    code = colors.get(color)
-    return code + str(obj) + reset if code else text
+    return colorCode[color] + str(obj) + colorCode[Color.Reset]
+
+def cprint (obj, color):
+    print(cformat(obj, color))
 
