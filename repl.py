@@ -53,7 +53,7 @@ def run():
 
     # Configure readline autocomplete
     autoComplete = AutoComplete(keywords)
-    readline.set_completer_delims('\t')
+    readline.set_completer_delims(' \t')
     readline.set_completer(autoComplete.complete)
     readline.parse_and_bind('tab: complete')
 
