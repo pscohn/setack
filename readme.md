@@ -37,7 +37,7 @@ atom = set
 
 __ToDo__
 * Implement (man|doc) command to give wikipedia answer about set command
-* Help command to ...
+* Help command, type command, () type => tuple
 * Implement procedures: map from variable to setexp, need a setexp literal
   symbol (symbol*) [body] proc
   x (x, y) [x y +]
