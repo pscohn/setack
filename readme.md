@@ -11,9 +11,34 @@
 stack-oriented language to operate on sets
 ```
 
+Setack is an interpreted, dynamically-typed, stack-oriented programming language to operate on sets. Whew!
+
+The repl comes with auto-complete, history, beautiful syntax and type errors, a variety of built-ins to help you expore the stack and environment, and documentation to help you learn about set operations.
+
+__Data Types__
+* Set
+* Tuple
+* Boolean
+* Integer
+* Float
+* Symbol
+
+__Grammar__
+```hs
+stat = expr {, expr}
+expr = atom {, atom}
+atom = set
+     | tuple
+     | boolean
+     | integer
+     | float
+     | symbol
+```
+
+__ToDo__
+* Implement (man|doc) command to give wikipedia answer about set command
+* Help command to ...
 * Implement procedures: map from variable to setexp, need a setexp literal
   symbol (symbol*) [body] proc
   x (x, y) [x y +]
   [] = set expression literal
-* Update readme to include key features and a more detailed description of the language. Interpreted dynamically-typed stack-oriented language, etc.
-
