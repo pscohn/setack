@@ -54,7 +54,8 @@ class VM():
 
                 if symbolType is types.FunctionType:
                     r = symbolValue(stack, symbols)
-                    stack.append(r)
+                    if r != None:
+                        stack.append(r)
                     return r
                 else:
                     stack.append(symbolValue)
@@ -72,12 +73,12 @@ class VM():
             stack.append(value)
             return value
 
-        elif valueType == parser.SetExp:
+        elif valueType == parser.Expr:
             # This will evaluate a stack expression and return top of local stack
             # Given a stack expression this will evaluate and return top
             # (1 2 3) returns (3)
             # (1 2 3 .) returns None
-            localStack = [] # A SetExp (1 2 3) gets its own stack
+            localStack = [] # A Expr (1 2 3) gets its own stack
             for v in value:
                 self.execute(v, localStack, symbols)
             if localStack: 

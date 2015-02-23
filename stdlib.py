@@ -74,7 +74,6 @@ def union(stack, _):
     assertType(lhs, parser.Set)
     assertType(rhs, parser.Set)
     result = parser.Set(lhs | rhs)
-    stack.append(result)
     return result
 
 def intersection(stack, _):
@@ -83,7 +82,6 @@ def intersection(stack, _):
     assertType(lhs, parser.Set)
     assertType(rhs, parser.Set)
     result = parser.Set(lhs & rhs)
-    stack.append(result)
     return result
 
 def difference(stack, _):
@@ -92,7 +90,6 @@ def difference(stack, _):
     assertType(lhs, parser.Set)
     assertType(rhs, parser.Set)
     result = parser.Set(lhs - rhs)
-    stack.append(result)
     return result
 
 def symmetricDifference(stack, _):
@@ -101,7 +98,6 @@ def symmetricDifference(stack, _):
     assertType(lhs, parser.Set)
     assertType(rhs, parser.Set)
     result = parser.Set(lhs ^ rhs)
-    stack.append(result)
     return result
 
 def cartesianProduct(stack, _):
@@ -110,7 +106,6 @@ def cartesianProduct(stack, _):
     assertType(lhs, parser.Set)
     assertType(rhs, parser.Set)
     result = parser.Set([t for t in itertools.product(lhs, rhs)])
-    stack.append(result)
     return result
 
 def powerSet(stack, _):
@@ -120,7 +115,6 @@ def powerSet(stack, _):
     s = list(value)
     result = parser.Set([parser.Set(i) for i in itertools.chain.from_iterable(
         itertools.combinations(s, r) for r in range(len(s) + 1))])
-    stack.append(result)
     return result
 
 def inSet(stack, _):
@@ -128,7 +122,6 @@ def inSet(stack, _):
     rhs, lhs = stack.pop(), stack.pop()
     assertType(rhs, parser.Set)
     result = lhs in rhs
-    stack.append(result)
     return result
 
 def notInSet(stack, _):
@@ -136,7 +129,6 @@ def notInSet(stack, _):
     rhs, lhs = stack.pop(), stack.pop()
     assertType(rhs, parser.Set)
     result = lhs not in rhs
-    stack.append(result)
     return result
 
 def subset(stack, _):
@@ -145,7 +137,6 @@ def subset(stack, _):
     assertType(lhs, parser.Set)
     assertType(rhs, parser.Set)
     result = lhs <= rhs
-    stack.append(result)
     return result
 
 def properSubset(stack, _):
@@ -154,6 +145,5 @@ def properSubset(stack, _):
     assertType(lhs, parser.Set)
     assertType(rhs, parser.Set)
     result = lhs < rhs
-    stack.append(result)
     return result
 

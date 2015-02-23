@@ -5,29 +5,32 @@ import enum
 import re
 
 class TokenType(enum.Enum):
-    End            = 0
-    NewLine        = 1
-    LeftBracket    = 2
-    RightBracket   = 3
-    LeftParen      = 4
-    RightParen     = 5
-    Comma          = 6
-    BooleanLiteral = 7
-    FloatLiteral   = 8
-    IntegerLiteral = 9
-    Symbol         = 10
+    End             = 0
+    NewLine         = 1
+    LeftBrace       = 2
+    RightBrace      = 3
+    LeftBracket     = 4
+    RightBracket    = 5
+    LeftParen       = 6
+    RightParen      = 7
+    Comma           = 8
+    BooleanLiteral  = 9
+    FloatLiteral    = 10
+    IntegerLiteral  = 11
+    Symbol          = 12
 
 Token = collections.namedtuple(
     'Token', ['type', 'value', 'start', 'end', 'lineno', 'line'])
 
-class SetExp(): 
+class Expr(): 
     def __init__(self, seq):
+        self.lazy    = False
         self.__terms = tuple(seq)
     def __iter__(self):
         for item in self.__terms:
             yield item
     def __repr__(self):
-        return 'SetExp({})'.format(', '.join(map(str, self.__terms)))
+        return 'Expr({})'.format(', '.join(map(str, self.__terms)))
 
 class Set(frozenset):
     def __repr__(self):
@@ -43,6 +46,8 @@ class Parser():
 
     tokenPattern = re.compile(u'''
           (?P<End>\Z)
+        | (?P<LeftBrace>\[)
+        | (?P<RightBrace>\])
         | (?P<LeftBracket>{)
         | (?P<RightBracket>})
         | (?P<LeftParen>\()
@@ -121,7 +126,7 @@ class Parser():
                 if len(curr) == 1:
                     result.append(curr.pop())
                 elif len(curr) > 1:
-                    result.append(SetExp(curr))
+                    result.append(Expr(curr))
                     curr = []
 
                 if token.type == TokenType.End and len(self.stack):
@@ -149,5 +154,5 @@ class Parser():
             else:
                 raise e
 
-        return SetExp(result)
+        return Expr(result)
 
