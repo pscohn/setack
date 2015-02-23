@@ -95,8 +95,7 @@ class Parser():
             elif token.type == TokenType.LeftBrace:
                 self.stack.append(token)
                 e = self.__parse(tokens)
-                e.lazy = True
-                curr.append(e)
+                curr.append(Expr(e.terms, lazy=True))
 
             elif token.type == TokenType.LeftBracket:
                 self.stack.append(token)

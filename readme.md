@@ -16,5 +16,6 @@ Setack is an interpreted, dynamically-typed, stack-oriented programming language
 The repl comes with auto-complete, history, beautiful syntax and type errors, a variety of built-ins to help you expore the stack and environment, and documentation to help you learn about set operations.
 
 __Todo__
+* Load file into repl command
 * Fill out documentation with some motivating examples and a more formal description of the language. Data Types, Built-Ins, etc.
 

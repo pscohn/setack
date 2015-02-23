@@ -3,6 +3,7 @@
 import itertools
 import parser
 import setacktypes
+import sys
 import types
 
 # Tools
@@ -27,6 +28,10 @@ def assertArity(stack, n):
 def showTop(stack, _):
     """show top of stack"""
     if stack: print(stack[-1])
+
+def write(stack, _):
+    if stack:
+        sys.stdout.write(stack[-1])
 
 def showStack(stack, _):
     """show stack"""

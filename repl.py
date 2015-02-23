@@ -18,7 +18,7 @@ startupMessage = '{}{}'.format(cformat('''
 ''', Color.Yellow))
 
 keywords = '''
-    define-symbol define-proc show-top show-type
+    define-symbol define-proc show-top show-type space new-line write
     depth in show-stack clear symmetric-difference not-in subset union
     power-set difference cartesian-product drop intersection show-symbols
 '''
