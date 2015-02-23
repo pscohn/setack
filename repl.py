@@ -63,7 +63,11 @@ def run():
         while True:
             line = input(cformat('> ', Color.Green))
             try:
-                vm.eval(line)
+                if line == 'trace':
+                    for step in vm.trace:
+                        print(step)
+                else:
+                    vm.eval(line)
             except Exception as e:
                 eType    = type(e)
                 eMessage = ''

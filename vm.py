@@ -32,7 +32,9 @@ class VM():
             print('{}: {}'.format(step, inst))
 
     def eval(self, string):
-        self.execute(self.parser.parse(string), self.stack, self.symbols)
+        self.trace = []
+        syntaxTree = self.parser.parse(string)
+        self.execute(syntaxTree, self.stack, self.symbols)
 
     def execute(self, value, stack, symbols):
         
@@ -42,16 +44,7 @@ class VM():
             stack.append(value)
             return value
 
-        elif valueType in (parser.Set, tuple):
-            tempStack = []
-            for v in value:
-                self.execute(v, tempStack, symbols)
-            value = valueType(tempStack)
-            stack.append(value)
-            return value
-
         elif valueType == parser.Symbol:
-
             if value not in symbols: 
                 stack.append(value)
                 return value
@@ -60,22 +53,38 @@ class VM():
                 symbolType  = type(symbolValue)
 
                 if symbolType is types.FunctionType:
-                    return symbolValue(stack, symbols)
+                    r = symbolValue(stack, symbols)
+                    stack.append(r)
+                    return r
                 else:
                     stack.append(symbolValue)
                     return symbolValue
 
-        elif valueType == parser.SetExp:
-            returnValues = []
+        elif valueType in (parser.Set, tuple):
+            results = []
             for v in value:
-                r = self.execute(v, stack, symbols)
-                if r != None: 
-                    returnValues.append(r)
-                self.trace.append('{} => {}'.format(v, r))
-            if len(returnValues):
-                return returnValues.pop()
-            else:
-                return None
+                localStack = [] # each expression needs a stack
+                r = self.execute(v, localStack, symbols)
+                if r != None:
+                    # only push results of expressions that evaluate to something
+                    results.append(r)
+            value = valueType(results)
+            stack.append(value)
+            return value
+
+        elif valueType == parser.SetExp:
+            # This will evaluate a stack expression and return top of local stack
+            # Given a stack expression this will evaluate and return top
+            # (1 2 3) returns (3)
+            # (1 2 3 .) returns None
+            localStack = [] # A SetExp (1 2 3) gets its own stack
+            for v in value:
+                self.execute(v, localStack, symbols)
+            if localStack: 
+                localStackTop = localStack.pop()
+                stack.append(localStackTop)
+                return localStackTop
         else:
             raise Exception('Unexpected value: {}'.format(value))
         
+

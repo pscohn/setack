@@ -37,7 +37,7 @@ class Symbol(str):
     def __init__(self, value):
         self = value
     def __repr__(self):
-        return '{}'.format(self)
+        return 'Symbol({})'.format(self)
 
 class Parser():
 
