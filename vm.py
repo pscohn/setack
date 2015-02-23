@@ -14,6 +14,7 @@ class VM():
                          'show-top'             : stdlib.showTop, 
                          'show-stack'           : stdlib.showStack, 
                          'show-symbols'         : stdlib.showSymbols, 
+                         'show-type'            : stdlib.showType,
                          'clear'                : stdlib.clear,
                          'depth'                : stdlib.depth,
                          'drop'                 : stdlib.drop,

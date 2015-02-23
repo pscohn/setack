@@ -79,6 +79,11 @@ def defineProc(stack, symbols):
     lazy, params, name = stack.pop(), stack.pop(), stack.pop()
     symbols[name] = setacktypes.Proc(name, params, lazy)
 
+def showType(stack, _):
+    assertArity(stack, 1)
+    value = stack.pop()
+    print(type(value))
+
 # Set Operations
 # ------------------------------------------------------------------------------
 

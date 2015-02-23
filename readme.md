@@ -13,8 +13,6 @@ stack-oriented language to operate on sets
 
 Setack is an interpreted, dynamically-typed, stack-oriented programming language to operate on sets. Whew!
 
-* Lexical Stacks: 1 2 3 (drop drop) show-stack
-
 The repl comes with auto-complete, history, beautiful syntax and type errors, a variety of built-ins to help you expore the stack and environment, and documentation to help you learn about set operations.
 
 __Data Types__
@@ -26,10 +24,6 @@ __Data Types__
 * Symbol
 ```
 
-__ToDo__
-* Implement (man|doc) command to give wikipedia answer about set command
-* Help command, type command, () type => tuple
-* Implement procedures: map from variable to setexp, need a setexp literal
-  symbol (symbol*) [body] proc
-  x (x, y) [x y +]
-  [] = set expression literal
+__Todo__
+* Wrap each type up in a class and move into setacktypes.py
+
