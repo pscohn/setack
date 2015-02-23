@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import parser
-import setacktypes
 import types
 import stdlib
+
+from setacktypes import *
 
 class VM():
     def __init__(self):
@@ -41,7 +42,7 @@ class VM():
             stack.append(value)
             return value
 
-        elif valueType == parser.Symbol:
+        elif valueType == Symbol:
             if value not in symbols: 
                 stack.append(value)
                 return value
@@ -49,11 +50,10 @@ class VM():
                 symbolValue = symbols[value]
                 symbolType  = type(symbolValue)
 
-                if symbolType == setacktypes.Proc:
-                    
+                if symbolType == Proc:
+                    # Todo: This is rough!
                     proc = symbolValue
                     bindings = dict(symbols)
-                    # Need to raise if not enough arguments
                     for p in proc.params:
                         bindings[p] = stack.pop()
                     localStack = []
@@ -71,7 +71,7 @@ class VM():
                     stack.append(symbolValue)
                     return symbolValue
 
-        elif valueType in (parser.Set, tuple):
+        elif valueType in (Set, tuple):
             results = []
             for v in value:
                 localStack = []
@@ -82,7 +82,7 @@ class VM():
             stack.append(value)
             return value
 
-        elif valueType == parser.Expr:
+        elif valueType == Expr:
             if value.lazy:
                 stack.append(value)
                 return value

@@ -4,6 +4,8 @@ import collections
 import enum
 import re
 
+from setacktypes import *
+
 class TokenType(enum.Enum):
     End             = 0
     NewLine         = 1
@@ -21,29 +23,6 @@ class TokenType(enum.Enum):
 
 Token = collections.namedtuple(
     'Token', ['type', 'value', 'start', 'end', 'lineno', 'line'])
-
-class Expr(): 
-    def __init__(self, seq, lazy=False):
-        self.lazy  = lazy
-        self.terms = tuple(seq)
-    def __iter__(self):
-        for item in self.terms:
-            yield item
-    def __repr__(self):
-        if self.lazy:
-            return 'Lazy({})'.format(', '.join(map(str, self.terms)))
-        else:
-            return 'Expr({})'.format(', '.join(map(str, self.terms)))
-
-class Set(frozenset):
-    def __repr__(self):
-        return '{{{}}}'.format(', '.join(map(str, self)))
-
-class Symbol(str):
-    def __init__(self, value):
-        self = value
-    def __repr__(self):
-        return 'Symbol({})'.format(self)
 
 class Parser():
 
