@@ -12,10 +12,10 @@ class VM():
         self.stack   = []
         self.symbols = { 'define-symbol'        : stdlib.defineSymbol,
                          'define-proc'          : stdlib.defineProc,
-                         'write'                : stdlib.write,
                          'space'                : ' ',
                          'new-line'             : '\n',
-                         'show-top'             : stdlib.showTop, 
+                         'write'                : stdlib.write,
+                         'print'                : stdlib.showTop, 
                          'show-stack'           : stdlib.showStack, 
                          'show-symbols'         : stdlib.showSymbols, 
                          'show-type'            : stdlib.showType,

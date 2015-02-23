@@ -2,9 +2,10 @@
 
 import itertools
 import parser
-import setacktypes
 import sys
 import types
+
+from setacktypes import *
 
 # Tools
 # ------------------------------------------------------------------------------
@@ -15,12 +16,12 @@ def assertType(obj, targetType):
         msg = '{} is not a {}'.format(obj, targetType.__name__)
         raise TypeError(msg)
 
-class FunctionArityError(Exception): 
+class ProcArityError(Exception): 
     pass
 
 def assertArity(stack, n):
     if len(stack) < n:
-        raise FunctionArityError('Expecting {} arguments on the stack'.format(n))
+        raise ProcArityError('Expecting {} arguments on the stack'.format(n))
 
 # Stack
 # ------------------------------------------------------------------------------
@@ -30,8 +31,8 @@ def showTop(stack, _):
     if stack: print(stack[-1])
 
 def write(stack, _):
-    if stack:
-        sys.stdout.write(stack[-1])
+    """write top of stack to stdout"""
+    if stack: sys.stdout.write(str(stack[-1]))
 
 def showStack(stack, _):
     """show stack"""
@@ -82,7 +83,7 @@ def defineSymbol(stack, symbols):
 def defineProc(stack, symbols):
     assertArity(stack, 3)
     lazy, params, name = stack.pop(), stack.pop(), stack.pop()
-    symbols[name] = setacktypes.Proc(name, params, lazy)
+    symbols[name] = Proc(name, params, lazy)
 
 def showType(stack, _):
     assertArity(stack, 1)
@@ -103,6 +104,7 @@ def union(stack, _):
 
 def intersection(stack, _):
     """{1,2,3} and {2,3,4} is {2,3}"""
+    assertArity(stack, 2)
     rhs, lhs = stack.pop(), stack.pop()
     assertType(lhs, parser.Set)
     assertType(rhs, parser.Set)
@@ -111,6 +113,7 @@ def intersection(stack, _):
 
 def difference(stack, _):
     """{1,2,3} and {2,3,4} is {1}"""
+    assertArity(stack, 2)
     rhs, lhs = stack.pop(), stack.pop()
     assertType(lhs, parser.Set)
     assertType(rhs, parser.Set)
@@ -119,6 +122,7 @@ def difference(stack, _):
 
 def symmetricDifference(stack, _):
     """{1,2,3} and {2,3,4} is {1,4}"""
+    assertArity(stack, 2)
     rhs, lhs = stack.pop(), stack.pop()
     assertType(lhs, parser.Set)
     assertType(rhs, parser.Set)
@@ -127,6 +131,7 @@ def symmetricDifference(stack, _):
 
 def cartesianProduct(stack, _):
     """{1,2} and {a,b} is {(1,a),(1,b),(2,a),(2,b)}"""
+    assertArity(stack, 2)
     rhs, lhs = stack.pop(), stack.pop()
     assertType(lhs, parser.Set)
     assertType(rhs, parser.Set)
@@ -135,6 +140,7 @@ def cartesianProduct(stack, _):
 
 def powerSet(stack, _):
     """{1,2} is {{},{1},{2},{1,2}}"""
+    assertArity(stack, 1)
     value = stack.pop()
     assertType(value, parser.Set)
     s = list(value)
@@ -144,6 +150,7 @@ def powerSet(stack, _):
 
 def inSet(stack, _):
     """1 in {1,2} is True"""
+    assertArity(stack, 2)
     rhs, lhs = stack.pop(), stack.pop()
     assertType(rhs, parser.Set)
     result = lhs in rhs
@@ -151,6 +158,7 @@ def inSet(stack, _):
 
 def notInSet(stack, _):
     """0 in {1,2} is True"""
+    assertArity(stack, 2)
     rhs, lhs = stack.pop(), stack.pop()
     assertType(rhs, parser.Set)
     result = lhs not in rhs
@@ -158,6 +166,7 @@ def notInSet(stack, _):
 
 def subset(stack, _):
     """{1,2,3} and {1,2,3} is True"""
+    assertArity(stack, 2)
     rhs, lhs = stack.pop(), stack.pop()
     assertType(lhs, parser.Set)
     assertType(rhs, parser.Set)
@@ -166,6 +175,7 @@ def subset(stack, _):
 
 def properSubset(stack, _):
     """{1,2,3} and {1,2,3} is False"""
+    assertArity(stack, 2)
     rhs, lhs = stack.pop(), stack.pop()
     assertType(lhs, parser.Set)
     assertType(rhs, parser.Set)
