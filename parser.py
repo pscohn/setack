@@ -115,6 +115,9 @@ class Parser():
                                 TokenType.RightParen,
                                 TokenType.End):
 
+                if token.type == TokenType.Comma and len(self.stack) == 0:
+                    raise e # Top-level comma
+
                 if len(curr) == 1:
                     result.append(curr.pop())
                 elif len(curr) > 1:

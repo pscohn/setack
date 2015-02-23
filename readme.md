@@ -25,14 +25,14 @@ __Data Types__
 
 __Grammar__
 ```hs
-stat = expr {, expr}
-expr = atom {, atom}
-atom = set
-     | tuple
-     | boolean
-     | integer
-     | float
-     | symbol
+expr  = bool
+      | int
+      | float
+      | symbol
+      | set
+      | tuple
+set   = "{" expr {, expr} "}"
+tuple = "(" expr {, expr} ")"
 ```
 
 __ToDo__

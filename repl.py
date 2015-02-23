@@ -70,7 +70,7 @@ def run():
                 if eType == SyntaxError:
                     eMessage += e.text + '\n'
                     eMessage += ' ' * e.offset + cformat('^', Color.Red) + '\n'
-                eMessage += cformat(eType.__name__ + ':', Color.Magenta)
+                eMessage += cformat(eType.__name__ + ': ', Color.Magenta)
                 eMessage += cformat(e, Color.Cyan)
                 print(eMessage)
     except (KeyboardInterrupt, EOFError):
