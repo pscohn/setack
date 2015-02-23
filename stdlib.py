@@ -2,6 +2,7 @@
 
 import itertools
 import parser
+import setacktypes
 import types
 
 # Tools
@@ -12,6 +13,13 @@ def assertType(obj, targetType):
     if objType != targetType:
         msg = '{} is not a {}'.format(obj, targetType.__name__)
         raise TypeError(msg)
+
+class FunctionArityError(Exception): 
+    pass
+
+def assertArity(stack, n):
+    if len(stack) < n:
+        raise FunctionArityError('Expecting {} arguments on the stack'.format(n))
 
 # Stack
 # ------------------------------------------------------------------------------
@@ -59,17 +67,24 @@ def drop(stack, _):
     """drop top of stack"""
     if stack: stack.pop()
 
-def assignSymbol(stack, symbols):
+def defineSymbol(stack, symbols):
     """assign value to symbol"""
+    assertArity(stack, 2)
     rhs, lhs = stack.pop(), stack.pop()
     assertType(lhs, parser.Symbol)
     symbols[lhs] = rhs
+
+def defineProc(stack, symbols):
+    assertArity(stack, 3)
+    lazy, params, name = stack.pop(), stack.pop(), stack.pop()
+    symbols[name] = setacktypes.Proc(name, params, lazy)
 
 # Set Operations
 # ------------------------------------------------------------------------------
 
 def union(stack, _):
     """{1,2,3} and {2,3,4} is {1,2,3,4}"""
+    assertArity(stack, 2)
     rhs, lhs = stack.pop(), stack.pop()
     assertType(lhs, parser.Set)
     assertType(rhs, parser.Set)

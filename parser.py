@@ -23,14 +23,17 @@ Token = collections.namedtuple(
     'Token', ['type', 'value', 'start', 'end', 'lineno', 'line'])
 
 class Expr(): 
-    def __init__(self, seq):
-        self.lazy    = False
-        self.__terms = tuple(seq)
+    def __init__(self, seq, lazy=False):
+        self.lazy  = lazy
+        self.terms = tuple(seq)
     def __iter__(self):
-        for item in self.__terms:
+        for item in self.terms:
             yield item
     def __repr__(self):
-        return 'Expr({})'.format(', '.join(map(str, self.__terms)))
+        if self.lazy:
+            return 'Lazy({})'.format(', '.join(map(str, self.terms)))
+        else:
+            return 'Expr({})'.format(', '.join(map(str, self.terms)))
 
 class Set(frozenset):
     def __repr__(self):
@@ -56,7 +59,7 @@ class Parser():
         | (?P<BooleanLiteral>True|False)
         | (?P<FloatLiteral>(-?)\d+\.\d+)
         | (?P<IntegerLiteral>(-?)\d+)
-        | (?P<Symbol>[^\s{}(),]+)
+        | (?P<Symbol>[\w-]+)
     ''', re.VERBOSE | re.UNICODE)
 
     def __init__(self, source=None):
@@ -109,6 +112,13 @@ class Parser():
                 curr.append(float(token.value))
             elif token.type == TokenType.IntegerLiteral:
                 curr.append(int(token.value))
+
+            elif token.type == TokenType.LeftBrace:
+                self.stack.append(token)
+                e = self.__parse(tokens)
+                e.lazy = True
+                curr.append(e)
+
             elif token.type == TokenType.LeftBracket:
                 self.stack.append(token)
                 curr.append(Set(self.__parse(tokens)))
@@ -116,6 +126,7 @@ class Parser():
                 self.stack.append(token)
                 curr.append(tuple(self.__parse(tokens)))
             elif token.type in (TokenType.Comma, 
+                                TokenType.RightBrace,
                                 TokenType.RightBracket,
                                 TokenType.RightParen,
                                 TokenType.End):
@@ -131,6 +142,16 @@ class Parser():
 
                 if token.type == TokenType.End and len(self.stack):
                     raise e # { or (
+
+                if token.type == TokenType.RightBrace:
+                    if len(self.stack) == 0:
+                        raise e # ()}
+                    else:
+                        t = self.stack.pop()
+                        if t.type == TokenType.LeftBrace:
+                            break
+                        else:
+                            raise e # ( }
 
                 if token.type == TokenType.RightBracket:
                     if len(self.stack) == 0:
