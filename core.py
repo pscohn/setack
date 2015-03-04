@@ -6,7 +6,7 @@ import sys
 import types
 
 from setacktypes import *
-from vm          import *
+from vmtools     import *
 
 # Stack
 # ------------------------------------------------------------------------------
