@@ -15,6 +15,7 @@ class VM():
         self.parser  = parser.Parser()
         self.stack   = []
         self.symbols = { 'run-file'             : self.runFile,
+                         'help'                 : core.showSymbols,
                          'define-symbol'        : core.defineSymbol,
                          'define-proc'          : core.defineProc,
                          'write'                : core.write,
@@ -41,6 +42,7 @@ class VM():
         for k in self.symbols.keys(): self.autocomplete.add(k)
 
     def runFile(self, stack, symbols):
+        """run file"""
         assertArity(stack, 1)
         lhs = stack.pop()
         assertType(lhs, str)

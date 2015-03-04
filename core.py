@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import inspect
 import itertools
 import parser
 import sys
@@ -38,7 +39,7 @@ def showSymbols(_, symbols):
     width = len(s)
     for symbol, value in symbols.items():
         valueType = type(value)
-        if valueType == types.FunctionType:
+        if valueType == types.FunctionType or inspect.ismethod(value):
             name = 'function'
             if value.__doc__: 
                 name += ' : {}'.format(value.__doc__)
