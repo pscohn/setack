@@ -1,12 +1,28 @@
 # -*- coding: utf-8 -*-
 
+import core
 import inspect
 import parser
 import types
-import stdlib
 
 from setacktypes import *
-from vmtools     import *
+
+class ArityError(Exception): 
+
+    def __init__(self, n):
+        self.n = n
+
+    def __str__(self):
+        return 'Expecting {} argument{} on the stack'.format(
+            self.n, '' if self.n == 1 else 's')
+
+def assertType(obj, targetType):
+    if type(obj) != targetType:
+        raise TypeError('{} is not a {}'.format(obj, targetType.__name__))
+
+def assertArity(stack, n):
+    if len(stack) < n:
+        raise ArityError(n)
 
 class VM():
 
@@ -14,35 +30,33 @@ class VM():
 
         self.parser  = parser.Parser()
         self.stack   = []
-        self.symbols = { 'define-symbol'        : stdlib.defineSymbol,
-                         'define-proc'          : stdlib.defineProc,
-                         'space'                : ' ',
-                         'new-line'             : '\n',
-                         'write'                : stdlib.write,
-                         'print'                : stdlib.showTop, 
-                         'show-stack'           : stdlib.showStack, 
-                         'show-symbols'         : stdlib.showSymbols, 
-                         'show-type'            : stdlib.showType,
-                         'clear'                : stdlib.clear,
-                         'depth'                : stdlib.depth,
-                         'drop'                 : stdlib.drop,
-                         'union'                : stdlib.union,
-                         'intersection'         : stdlib.intersection,
-                         'difference'           : stdlib.difference,
-                         'symmetric-difference' : stdlib.symmetricDifference,
-                         'cartesian-product'    : stdlib.cartesianProduct,
-                         'power-set'            : stdlib.powerSet,
-                         'in'                   : stdlib.inSet,
-                         'not-in'               : stdlib.notInSet,
-                         'subset'               : stdlib.subset,
-                         'proper-subset'        : stdlib.properSubset,
-                         'load-file'            : self.loadFile }
+        self.symbols = { 'run-file'             : self.runFile,
+                         'define-symbol'        : core.defineSymbol,
+                         'define-proc'          : core.defineProc,
+                         'write'                : core.write,
+                         'print'                : core.showTop, 
+                         'show-stack'           : core.showStack, 
+                         'show-symbols'         : core.showSymbols, 
+                         'show-type'            : core.showType,
+                         'clear'                : core.clear,
+                         'depth'                : core.depth,
+                         'drop'                 : core.drop,
+                         'union'                : core.union,
+                         'intersection'         : core.intersection,
+                         'difference'           : core.difference,
+                         'symmetric-difference' : core.symmetricDifference,
+                         'cartesian-product'    : core.cartesianProduct,
+                         'power-set'            : core.powerSet,
+                         'in'                   : core.inSet,
+                         'not-in'               : core.notInSet,
+                         'subset'               : core.subset,
+                         'proper-subset'        : core.properSubset }
 
         self.autocomplete = autocomplete
 
         for k in self.symbols.keys(): self.autocomplete.add(k)
 
-    def loadFile(self, stack, symbols):
+    def runFile(self, stack, symbols):
         assertArity(stack, 1)
         lhs = stack.pop()
         assertType(lhs, str)
