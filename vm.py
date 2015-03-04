@@ -1,13 +1,17 @@
 # -*- coding: utf-8 -*-
 
+import inspect
 import parser
 import types
 import stdlib
 
 from setacktypes import *
+from vmtools     import *
 
 class VM():
-    def __init__(self):
+
+    def __init__(self, autocomplete=None):
+
         self.parser  = parser.Parser()
         self.stack   = []
         self.symbols = { 'define-symbol'        : stdlib.defineSymbol,
@@ -31,17 +35,31 @@ class VM():
                          'in'                   : stdlib.inSet,
                          'not-in'               : stdlib.notInSet,
                          'subset'               : stdlib.subset,
-                         'proper-subset'        : stdlib.properSubset }
+                         'proper-subset'        : stdlib.properSubset,
+                         'load-file'            : self.loadFile }
+
+        self.autocomplete = autocomplete
+
+        for k in self.symbols.keys(): self.autocomplete.add(k)
+
+    def loadFile(self, stack, symbols):
+        assertArity(stack, 1)
+        lhs = stack.pop()
+        assertType(lhs, str)
+        lhs = lhs.replace('"', "")
+        with open(lhs, 'r') as f:
+            for line in f.readlines():
+                self.eval(line)
 
     def eval(self, string):
         syntaxTree = self.parser.parse(string)
-        self.execute(syntaxTree, self.stack, self.symbols)
+        return self.execute(syntaxTree, self.stack, self.symbols)
 
     def execute(self, value, stack, symbols):
         
         valueType = type(value)
 
-        if valueType in (bool, float, int):
+        if valueType in (bool, float, int, str):
             stack.append(value)
             return value
 
@@ -65,7 +83,7 @@ class VM():
                         stack.append(r)
                     return r
 
-                elif symbolType == types.FunctionType:
+                elif symbolType == types.FunctionType or inspect.ismethod(symbolValue):
                     r = symbolValue(stack, symbols)
                     if r != None: 
                         stack.append(r)

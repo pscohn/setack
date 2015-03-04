@@ -19,7 +19,8 @@ class TokenType(enum.Enum):
     BooleanLiteral  = 9
     FloatLiteral    = 10
     IntegerLiteral  = 11
-    Symbol          = 12
+    StringLiteral   = 12
+    Symbol          = 13
 
 Token = collections.namedtuple(
     'Token', ['type', 'value', 'start', 'end', 'lineno', 'line'])
@@ -38,7 +39,8 @@ class Parser():
         | (?P<BooleanLiteral>True|False)
         | (?P<FloatLiteral>(-?)\d+\.\d+)
         | (?P<IntegerLiteral>(-?)\d+)
-        | (?P<Symbol>[\w-]+)
+        | (?P<StringLiteral>"[^"]*")
+        | (?P<Symbol>[\w\-]+)
     ''', re.VERBOSE | re.UNICODE)
 
     def __init__(self, source=None):
@@ -85,12 +87,14 @@ class Parser():
                     curr.append(True)
                 elif token.value == 'False': 
                     curr.append(False)
-            elif token.type == TokenType.Symbol:
-                curr.append(Symbol(token.value))
             elif token.type == TokenType.FloatLiteral:
                 curr.append(float(token.value))
             elif token.type == TokenType.IntegerLiteral:
                 curr.append(int(token.value))
+            elif token.type == TokenType.StringLiteral:
+                curr.append(token.value)
+            elif token.type == TokenType.Symbol:
+                curr.append(Symbol(token.value))
 
             elif token.type == TokenType.LeftBrace:
                 self.stack.append(token)

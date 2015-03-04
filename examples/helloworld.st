@@ -1,1 +1,1 @@
-world hello . drop .
+world hello print drop print

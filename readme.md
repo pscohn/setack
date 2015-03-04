@@ -17,5 +17,6 @@ The repl comes with auto-complete, history, beautiful syntax and type errors, a 
 
 __Todo__
 * Load file into repl command
+* Autocomplete user defined symbols, etc
 * Fill out documentation with some motivating examples and a more formal description of the language. Data Types, Built-Ins, etc.
 

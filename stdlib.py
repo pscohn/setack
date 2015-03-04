@@ -6,22 +6,7 @@ import sys
 import types
 
 from setacktypes import *
-
-# Tools
-# ------------------------------------------------------------------------------
-
-def assertType(obj, targetType):
-    objType = type(obj)
-    if objType != targetType:
-        msg = '{} is not a {}'.format(obj, targetType.__name__)
-        raise TypeError(msg)
-
-class ProcArityError(Exception): 
-    pass
-
-def assertArity(stack, n):
-    if len(stack) < n:
-        raise ProcArityError('Expecting {} arguments on the stack'.format(n))
+from vmtools     import *
 
 # Stack
 # ------------------------------------------------------------------------------
