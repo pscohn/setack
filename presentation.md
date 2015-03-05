@@ -9,6 +9,6 @@
   [a b union] eval-thunk
   u [a, b] [a b union] define-proc
   show-symbols
-  a b union
+  a b u
 
 * "examples/goodbye-world.setack" run-file
