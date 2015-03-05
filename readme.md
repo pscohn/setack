@@ -43,6 +43,12 @@ __Built-in Set Operations__
    * subset
    * proper-subset
 
+__Built-in Number Operations__
+   * multiply
+   * divide
+   * add
+   * subtract
+
 __Grammar__
 ```js
 expr  = atom { " " expr }
