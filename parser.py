@@ -40,7 +40,7 @@ class Parser():
         | (?P<FloatLiteral>(-?)\d+\.\d+)
         | (?P<IntegerLiteral>(-?)\d+)
         | (?P<StringLiteral>"[^"]*")
-        | (?P<Symbol>[\w\-]+)
+        | (?P<Symbol>[\w\-\*\/\+]+)
     ''', re.VERBOSE | re.UNICODE)
 
     def __init__(self, source=None):

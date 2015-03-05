@@ -2,6 +2,7 @@
 
 import inspect
 import libset
+import libmath
 import parser
 import types
 
@@ -21,6 +22,7 @@ class VM():
                          'show-stack'           : self.showStack, 
                          'show-symbols'         : self.showSymbols, 
                          'eval-thunk'           : self.evalThunk,
+                         'if'                   : self.if_,
                          'union'                : libset.union,
                          'intersection'         : libset.intersection,
                          'difference'           : libset.difference,
@@ -30,7 +32,11 @@ class VM():
                          'in'                   : libset.inSet,
                          'not-in'               : libset.notInSet,
                          'subset'               : libset.subset,
-                         'proper-subset'        : libset.properSubset }
+                         'proper-subset'        : libset.properSubset,
+                         '*'                    : libmath.mul,
+                         '/'                    : libmath.div,
+                         '+'                    : libmath.add,
+                         '-'                    : libmath.sub }
         self.builtins = set()
         for k, v in self.symbols.items():
             self.builtins.add(k)
@@ -101,6 +107,23 @@ class VM():
             for line in f.readlines():
                 self.eval(line)
 
+    def if_(self, stack):
+        assertArity(stack, 3)
+        else_ = stack.pop()
+        then  = stack.pop()
+        cond  = stack.pop()
+        assertType(cond,  Expr)
+        assertType(then,  Expr)
+        assertType(else_, Expr)
+        cond.lazy  = False
+        condResult = self.execute(cond, self.stack, self.symbols)
+        if condResult:
+            then.lazy = False
+            return self.execute(then, self.stack, self.symbols)
+        else:
+            else_.lazy = False
+            return self.execute(else_, self.stack, self.symbols)
+
     def evalThunk(self, stack):
         """evaluate a lazy expression"""
         assertArity(stack, 1)
@@ -132,7 +155,6 @@ class VM():
                 symbolType  = type(symbolValue)
 
                 if symbolType == Proc:
-                    # Todo: This is rough!
                     proc = symbolValue
                     bindings = dict(symbols)
                     for p in proc.params:
