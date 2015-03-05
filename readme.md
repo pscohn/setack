@@ -7,11 +7,13 @@
   / __| __|_   _| (_)_\(_|(/ __| |/ /
   \__ \ _|  | |    / _ \  | (__  ' <
   |___/___| |_|   /_/ \_\  \___|_|\_\
-
-stack-oriented language to operate on sets
 ```
 
-Setack is an interpreted, dynamically-typed, stack-oriented programming language to operate on sets.
+Setack is:
+   * a domain specific language for operating on sets
+   * stack-oriented   
+   * interpreted
+   * dynamically-typed
 
 The repl comes with:
    * auto-complete
@@ -19,7 +21,7 @@ The repl comes with:
    * syntax and type errors
    * built-in set operations
    * documentation to help you learn about set operations
-   
+
 __Built-in Set Operations__
    * union
    * intersection
@@ -51,3 +53,4 @@ thunk = "[" expr { "," expr } "]"
 __Todo__
 * implement define-function
 * add control flow
+* write tests
