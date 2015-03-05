@@ -1,8 +1,6 @@
 class ArityError(Exception): 
-
     def __init__(self, n):
         self.n = n
-
     def __str__(self):
         return 'Expecting {} argument{} on the stack'.format(
             self.n, '' if self.n == 1 else 's')

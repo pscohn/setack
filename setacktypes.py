@@ -16,7 +16,7 @@ class Expr():
             yield item
     def __repr__(self):
         if self.lazy:
-            return 'LazyExpr({})'.format(', '.join(map(str, self.terms)))
+            return 'Thunk({})'.format(', '.join(map(str, self.terms)))
         else:
             return 'Expr({})'.format(', '.join(map(str, self.terms)))
 

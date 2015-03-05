@@ -17,16 +17,14 @@ startupMessage = '{}{}'.format(cformat('''
   |___/___| |_|   /_/ \_\  \___|_|\_\ 
 ''', Color.Yellow))
 
-def findFilesInCurrentDirectory():
+def findSetackFilesInCurrentDirectory():
     result = []
     cwd    = os.getcwd()
     for directory, _, files in os.walk(cwd):
+        files = [f for f in files if f.endswith('.setack')]
         for filename in files:
-            rel_dir = os.path.relpath(directory, cwd)
-            if rel_dir == '.':
-                rel_file = filename
-            else:
-                rel_file = os.path.join(rel_dir, filename)
+            rel_dir  = os.path.relpath(directory, cwd)
+            rel_file = os.path.join(rel_dir, filename)
             result.append(rel_file)
     return result
 
@@ -65,7 +63,7 @@ def run():
     readline.read_history_file(historyFilepath)
 
     autoComplete = AutoComplete()
-    autoComplete.addOptions(findFilesInCurrentDirectory())
+    autoComplete.addOptions(findSetackFilesInCurrentDirectory())
     autoComplete.addOptions(vm.symbols.keys())
     readline.set_completer(autoComplete.complete)
     readline.set_completer_delims(' \t"')
@@ -77,7 +75,7 @@ def run():
             line = input(cformat('> ', Color.Green))
             try:
                 result = vm.eval(line)
-                if result: 
+                if result != None: 
                     print(result)
             except Exception as e:
                 print(formatException(e))

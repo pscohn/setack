@@ -92,15 +92,13 @@ class Parser():
             elif token.type == TokenType.IntegerLiteral:
                 curr.append(int(token.value))
             elif token.type == TokenType.StringLiteral:
-                curr.append(token.value)
+                curr.append(token.value[1:-1])
             elif token.type == TokenType.Symbol:
                 curr.append(Symbol(token.value))
-
             elif token.type == TokenType.LeftBrace:
                 self.stack.append(token)
                 e = self.__parse(tokens)
                 curr.append(Expr(e.terms, lazy=True))
-
             elif token.type == TokenType.LeftBracket:
                 self.stack.append(token)
                 curr.append(Set(self.__parse(tokens)))
@@ -158,4 +156,3 @@ class Parser():
                 raise e
 
         return Expr(result)
-
