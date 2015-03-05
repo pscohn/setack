@@ -1,8 +1,13 @@
 * go over readme.md
 
+* repl basics
+    show auto-complete
+    show docs by typing help
+    show syntax and type error
+
 * "examples/friends.setack" run-file
    show-symbols
-   a b union
+   a b show-stack
    a b intersection
 
 * [a b union]
