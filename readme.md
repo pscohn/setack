@@ -22,6 +22,14 @@ The repl comes with:
    * built-in set operations
    * documentation to help you learn about set operations
 
+__Built-in Functions__
+   * help
+   * print
+   * show-stack
+   * show-symbols
+   * define-symbol
+   * run-file
+
 __Built-in Set Operations__
    * union
    * intersection
