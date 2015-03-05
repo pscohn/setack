@@ -6,7 +6,7 @@
    a b intersection
 
 * [a b union]
-  [a b union] eval-think
+  [a b union] eval-thunk
   u [a, b] [a b union] define-proc
   show-symbols
   a b union
