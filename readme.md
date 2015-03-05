@@ -13,8 +13,6 @@ stack-oriented language to operate on sets
 
 Setack is an interpreted, dynamically-typed, stack-oriented programming language to operate on sets.
 
-The repl comes with auto-complete, history, syntax and type errors, a variety of built-ins to help you expore the stack and environment, and documentation to help you learn about set operations.
-
 The repl comes with:
    * auto-complete
    * history
