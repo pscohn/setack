@@ -15,10 +15,12 @@ class VM():
         self.stack   = []
         self.symbols = { 'run-file'             : self.runFile,
                          'define-symbol'        : self.defineSymbol,
+                         'define-proc'          : self.defineProc,
                          'print'                : self.showTop, 
                          'help'                 : self.showHelp,
                          'show-stack'           : self.showStack, 
                          'show-symbols'         : self.showSymbols, 
+                         'eval-thunk'           : self.evalThunk,
                          'union'                : libset.union,
                          'intersection'         : libset.intersection,
                          'difference'           : libset.difference,
@@ -77,14 +79,14 @@ class VM():
         return result
 
     def defineSymbol(self, stack):
-        """X 1 define-symbol"""
+        """name value define-symbol"""
         assertArity(stack, 2)
         rhs, lhs = stack.pop(), stack.pop()
         assertType(lhs, parser.Symbol)
         self.symbols[lhs] = rhs
 
     def defineProc(self, stack):
-        """define procedure"""
+        """name (params) [body] define-proc"""
         assertArity(stack, 3)
         lazy, params, name = stack.pop(), stack.pop(), stack.pop()
         self.symbols[name] = Proc(name, params, lazy)
@@ -98,6 +100,14 @@ class VM():
         with open(lhs, 'r') as f:
             for line in f.readlines():
                 self.eval(line)
+
+    def evalThunk(self, stack):
+        """evaluate a lazy expression"""
+        assertArity(stack, 1)
+        lhs = stack.pop()
+        assertType(lhs, Expr)
+        lhs.lazy = False
+        return self.execute(lhs, self.stack, self.symbols)
 
     def eval(self, string):
         syntaxTree = self.parser.parse(string)
@@ -165,8 +175,5 @@ class VM():
                     localStackTop = localStack.pop()
                     stack.append(localStackTop)
                     return localStackTop
-
         else:
             raise Exception('Unexpected value: {}'.format(value))
-        
-

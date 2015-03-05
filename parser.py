@@ -92,7 +92,7 @@ class Parser():
             elif token.type == TokenType.IntegerLiteral:
                 curr.append(int(token.value))
             elif token.type == TokenType.StringLiteral:
-                curr.append(token.value[1:-1])
+                curr.append(token.value)
             elif token.type == TokenType.Symbol:
                 curr.append(Symbol(token.value))
             elif token.type == TokenType.LeftBrace:

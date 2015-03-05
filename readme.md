@@ -29,6 +29,7 @@ __Built-in Functions__
    * show-symbols
    * define-symbol
    * run-file
+   * eval-thunk
 
 __Built-in Set Operations__
    * union
@@ -59,6 +60,5 @@ thunk = "[" expr { "," expr } "]"
 ```
 
 __Todo__
-* implement define-function
 * add control flow
 * write tests

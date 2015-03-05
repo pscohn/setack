@@ -1,0 +1,2 @@
+a {alice, bob, carol} define-symbol
+b {alice, dan} define-symbol
