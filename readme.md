@@ -28,8 +28,10 @@ __Built-in Functions__
    * show-stack
    * show-symbols
    * define-symbol
+   * define-proc
    * run-file
    * eval-thunk
+   * if
 
 __Built-in Set Operations__
    * union
@@ -64,7 +66,3 @@ set   = "{" expr { "," expr } "}"
 tuple = "(" expr { "," expr } ")"
 thunk = "[" expr { "," expr } "]"
 ```
-
-__Todo__
-* add control flow
-* write tests
