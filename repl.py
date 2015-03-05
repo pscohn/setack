@@ -17,30 +17,24 @@ startupMessage = '{}{}'.format(cformat('''
   |___/___| |_|   /_/ \_\  \___|_|\_\ 
 ''', Color.Yellow))
 
-def getFiles():
-    result = set()
+def findFilesInCurrentDirectory():
+    result = []
     cwd    = os.getcwd()
     for directory, _, files in os.walk(cwd):
         for filename in files:
-            rel_dir  = os.path.relpath(directory, cwd)
+            rel_dir = os.path.relpath(directory, cwd)
             if rel_dir == '.':
                 rel_file = filename
             else:
                 rel_file = os.path.join(rel_dir, filename)
-            result.add(rel_file)
+            result.append(rel_file)
     return result
 
 class AutoComplete():
-
     def __init__(self):
         self.options = []
-
-    def add(self, option):
-        self.options = sorted(self.options + [option])
-
     def addOptions(self, options):
         self.options = sorted(self.options + list(options))
-
     def complete(self, text, state):
         result = None
         if state == 0:
@@ -48,46 +42,45 @@ class AutoComplete():
                 self.matches = self.options[:]
             else:
                 self.matches = [s for s in self.options if s and s.startswith(text)]
-
         if state < len(self.matches):
             result = self.matches[state]
-
         return result
+
+def formatException(e):
+    result = ''
+    eType  = type(e)
+    if eType == SyntaxError:
+        result += e.text + '\n'
+        result += ' ' * e.offset + cformat('^', Color.Red) + '\n'
+    result += cformat(eType.__name__ + ': ', Color.Magenta)
+    result += cformat(e, Color.Cyan)
+    return result
 
 def run():
 
-    # Configure readline history
+    vm = VM()
+
     if not os.path.exists(historyFilepath): 
         open(historyFilepath, 'w')
     readline.read_history_file(historyFilepath)
 
-    # Configure readline autocomplete
     autoComplete = AutoComplete()
-
-    autoComplete.addOptions(getFiles())
-
+    autoComplete.addOptions(findFilesInCurrentDirectory())
+    autoComplete.addOptions(vm.symbols.keys())
+    readline.set_completer(autoComplete.complete)
     readline.set_completer_delims(' \t"')
     readline.parse_and_bind('tab: complete')
-    readline.set_completer(autoComplete.complete)
 
     try:
-        vm = VM(autoComplete)
         print(startupMessage)
         while True:
             line = input(cformat('> ', Color.Green))
             try:
-                r = vm.eval(line)
-                if r:
-                    print(r)
+                result = vm.eval(line)
+                if result: 
+                    print(result)
             except Exception as e:
-                eType    = type(e)
-                eMessage = ''
-                if eType == SyntaxError:
-                    eMessage += e.text + '\n'
-                    eMessage += ' ' * e.offset + cformat('^', Color.Red) + '\n'
-                eMessage += cformat(eType.__name__ + ': ', Color.Magenta)
-                eMessage += cformat(e, Color.Cyan)
-                print(eMessage)
+                print(formatException(e))
     except (KeyboardInterrupt, EOFError):
         exit(0)
     finally:

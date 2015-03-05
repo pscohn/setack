@@ -10,10 +10,9 @@ from vmtools     import *
 
 class VM():
 
-    def __init__(self, autocomplete=None):
-
-        self.parser  = parser.Parser()
+    def __init__(self):
         self.stack   = []
+        self.parser  = parser.Parser()
         self.symbols = { 'run-file'             : self.runFile,
                          'help'                 : core.showSymbols,
                          'define-symbol'        : core.defineSymbol,
@@ -36,10 +35,6 @@ class VM():
                          'not-in'               : core.notInSet,
                          'subset'               : core.subset,
                          'proper-subset'        : core.properSubset }
-
-        self.autocomplete = autocomplete
-
-        for k in self.symbols.keys(): self.autocomplete.add(k)
 
     def runFile(self, stack, symbols):
         """run file"""
