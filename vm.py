@@ -108,6 +108,7 @@ class VM():
                 self.eval(line)
 
     def if_(self, stack):
+        """[condition] [then] [else] if"""
         assertArity(stack, 3)
         else_ = stack.pop()
         then  = stack.pop()
