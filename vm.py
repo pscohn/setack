@@ -15,7 +15,6 @@ class VM():
         self.stack   = []
         self.symbols = { 'run-file'             : self.runFile,
                          'define-symbol'        : self.defineSymbol,
-                         'define-proc'          : self.defineProc,
                          'print'                : self.showTop, 
                          'help'                 : self.showHelp,
                          'show-stack'           : self.showStack, 
