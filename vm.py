@@ -36,7 +36,8 @@ class VM():
                          '*'                    : libmath.mul,
                          '/'                    : libmath.div,
                          '+'                    : libmath.add,
-                         '-'                    : libmath.sub }
+                         '-'                    : libmath.sub,
+                         '%'                    : libmath.mod }
         self.builtins = set()
         for k, v in self.symbols.items():
             self.builtins.add(k)
