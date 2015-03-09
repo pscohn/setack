@@ -32,3 +32,11 @@ def sub(stack):
     assertType(lhs, int, float)
     assertType(rhs, int, float)
     return lhs - rhs
+
+def mod(stack):
+    """find modulo of 2 numbers"""
+    assertArity(stack, 2)
+    rhs, lhs = stack.pop(), stack.pop()
+    assertType(lhs, int, float)
+    assertType(rhs, int, float)
+    return lhs % rhs
