@@ -140,6 +140,10 @@ class VM():
         self.stack.append(result)
         return result
 
+    def evalFile(self, filepath):
+        with open(filepath, 'r') as f:
+            self.eval(f.read())
+
     def execute(self, value, stack, symbols):
         
         valueType = type(value)
