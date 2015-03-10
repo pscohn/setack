@@ -22,6 +22,16 @@ The repl comes with:
    * built-in set operations
    * documentation to help you learn about set operations
 
+__API__
+
+Start repl:
+
+    python3 setack.py
+
+Run file:
+
+    python3 setack.py [file]
+
 __Built-in Functions__
    * help
    * print
